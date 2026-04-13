@@ -133,9 +133,9 @@ async function loadOverview() {
   document.getElementById('statServices').innerText = "...";
 
   try {
-    const { count: userCount, error: errC } = await supabaseClient.from('sellers').select('*', { count: 'exact', head: true });
-    const { count: svcCount, error: errS } = await supabaseClient.from('services').select('*', { count: 'exact', head: true });
-    const { count: orderCount, error: errO } = await supabaseClient.from('orders').select('*', { count: 'exact', head: true });
+    const { count: userCount, error: errC } = await window.supabaseClient.from('sellers').select('*', { count: 'exact', head: true });
+    const { count: svcCount, error: errS } = await window.supabaseClient.from('services').select('*', { count: 'exact', head: true });
+    const { count: orderCount, error: errO } = await window.supabaseClient.from('orders').select('*', { count: 'exact', head: true });
     
     document.getElementById('statUsers').innerText = orderCount || "0";
     document.getElementById('statSellers').innerText = userCount || "0";
@@ -152,7 +152,7 @@ async function loadVerifications() {
   tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color:var(--text-muted);">Fetching pending verifications...</td></tr>';
   
   try {
-    const { data: pendings, error } = await supabaseClient.from('seller_applications').select('*').eq('status', 'pending');
+    const { data: pendings, error } = await window.supabaseClient.from('seller_applications').select('*').eq('status', 'pending');
     
     if (error || !pendings || pendings.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px;">No pending applications! 🎉</td></tr>';
