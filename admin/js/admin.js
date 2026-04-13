@@ -128,29 +128,33 @@ function showLogin() {
 // --- Data Fetching ---
 
 async function loadOverview() {
-  // In a real app, you'd query Supabase: 
-  // const { count: userCount } = await supabaseClient.from('users').select('*', { count: 'exact' });
-  
-  // For demo, we are mocking API delays
-  setTimeout(() => {
-    document.getElementById('statUsers').innerText = "2,451";
-    document.getElementById('statSellers').innerText = "187";
-    document.getElementById('statServices').innerText = "842";
-  }, 500);
+  document.getElementById('statUsers').innerText = "...";
+  document.getElementById('statSellers').innerText = "...";
+  document.getElementById('statServices').innerText = "...";
+
+  try {
+    const { count: userCount, error: errC } = await supabaseClient.from('sellers').select('*', { count: 'exact', head: true });
+    const { count: svcCount, error: errS } = await supabaseClient.from('services').select('*', { count: 'exact', head: true });
+    const { count: orderCount, error: errO } = await supabaseClient.from('orders').select('*', { count: 'exact', head: true });
+    
+    document.getElementById('statUsers').innerText = orderCount || "0";
+    document.getElementById('statSellers').innerText = userCount || "0";
+    document.getElementById('statServices').innerText = svcCount || "0";
+  } catch (e) {
+    document.getElementById('statUsers').innerText = "0";
+    document.getElementById('statSellers').innerText = "0";
+    document.getElementById('statServices').innerText = "0";
+  }
 }
 
 async function loadVerifications() {
   const tbody = document.getElementById('verificationsTableBody');
   tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color:var(--text-muted);">Fetching pending verifications...</td></tr>';
   
-  // Example dummy data instead of Supabase call until table is created
-  setTimeout(() => {
-    const pendings = [
-      { id: 'usr_8192', name: 'John Doe', date: '2026-04-13', category: 'Creative' },
-      { id: 'usr_9912', name: 'Sarah Miller', date: '2026-04-14', category: 'Business' }
-    ];
+  try {
+    const { data: pendings, error } = await supabaseClient.from('seller_applications').select('*').eq('status', 'pending');
     
-    if (pendings.length === 0) {
+    if (error || !pendings || pendings.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px;">No pending applications! 🎉</td></tr>';
       document.getElementById('verificationCount').innerText = "0";
       return;
@@ -160,8 +164,8 @@ async function loadVerifications() {
     
     tbody.innerHTML = pendings.map(app => `
       <tr>
-        <td style="font-weight:600;">${app.name} <div class="text-xs text-muted">${app.id}</div></td>
-        <td>${app.date}</td>
+        <td style="font-weight:600;">${app.name} <div class="text-xs text-muted">${app.email || app.id}</div></td>
+        <td>${new Date(app.applied_date).toLocaleDateString()}</td>
         <td>${app.category}</td>
         <td><span class="badge" style="background:rgba(217, 119, 6, 0.2); color:var(--gold);">Pending</span></td>
         <td>
@@ -170,7 +174,10 @@ async function loadVerifications() {
         </td>
       </tr>
     `).join('');
-  }, 800);
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color:var(--red);">Failed to load data.</td></tr>';
+    document.getElementById('verificationCount').innerText = "0";
+  }
 }
 
 async function loadUsers() {
