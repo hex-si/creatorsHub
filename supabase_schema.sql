@@ -2,7 +2,7 @@
 -- Copy and paste this into the Supabase SQL Editor
 
 -- Table: sellers
-CREATE TABLE public.sellers (
+CREATE TABLE IF NOT EXISTS public.sellers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
@@ -21,8 +21,23 @@ CREATE TABLE public.sellers (
     packages JSONB DEFAULT '[]'
 );
 
+-- Safely add missing columns if the sellers table already existed prior to this update
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE public.sellers ADD COLUMN portfolio JSONB DEFAULT '[]';
+    EXCEPTION
+        WHEN duplicate_column THEN null;
+    END;
+    BEGIN
+        ALTER TABLE public.sellers ADD COLUMN packages JSONB DEFAULT '[]';
+    EXCEPTION
+        WHEN duplicate_column THEN null;
+    END;
+END $$;
+
 -- Table: services
-CREATE TABLE public.services (
+CREATE TABLE IF NOT EXISTS public.services (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     seller_id UUID REFERENCES public.sellers(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
@@ -35,7 +50,7 @@ CREATE TABLE public.services (
 );
 
 -- Table: products
-CREATE TABLE public.products (
+CREATE TABLE IF NOT EXISTS public.products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     seller_id UUID REFERENCES public.sellers(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
@@ -56,7 +71,7 @@ CREATE TABLE public.products (
 );
 
 -- Table: orders
-CREATE TABLE public.orders (
+CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     service_id UUID REFERENCES public.services(id) ON DELETE SET NULL,
     service_name TEXT,
@@ -71,7 +86,7 @@ CREATE TABLE public.orders (
 );
 
 -- Table: seller_applications
-CREATE TABLE public.seller_applications (
+CREATE TABLE IF NOT EXISTS public.seller_applications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     email TEXT,
@@ -87,7 +102,7 @@ CREATE TABLE public.seller_applications (
 );
 
 -- Table: testimonials
-CREATE TABLE public.testimonials (
+CREATE TABLE IF NOT EXISTS public.testimonials (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     role TEXT,
