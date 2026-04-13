@@ -1,0 +1,75 @@
+{
+  "name": "CreatorHub — Hire Local Creators",
+  "short_name": "CreatorHub",
+  "description": "A curated marketplace of verified local creators. Hire for design, tutoring, marketing, food & more. Fixed prices, fast delivery.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "id": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#08080F",
+  "theme_color": "#7C3AED",
+  "categories": ["shopping", "business", "lifestyle"],
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "CreatorHub Home Screen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Services",
+      "short_name": "Explore",
+      "description": "Browse all verified services",
+      "url": "/explore.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Shop Products",
+      "short_name": "Products",
+      "description": "Browse local handmade products",
+      "url": "/products.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Become a Seller",
+      "short_name": "Sell",
+      "description": "Apply to join CreatorHub",
+      "url": "/become-seller.html",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/request.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

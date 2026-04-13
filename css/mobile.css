@@ -1,0 +1,147 @@
+/* ============================================================
+   Mobile-first additions to main.css
+   — Bottom Nav, Touch fixes, Safe Areas, Mobile polish
+   ============================================================ */
+
+/* ——— Bottom Navigation Bar ——— */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  /* Hide desktop action buttons, show hamburger only */
+  .navbar-actions .btn-primary,
+  .navbar-actions .btn-ghost,
+  .navbar-actions .btn-outline {
+    display: none !important;
+  }
+  .hamburger { display: flex !important; }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-sticky);
+    background: rgba(8, 8, 15, 0.96);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-subtle);
+    padding: 8px 4px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .bottom-nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    min-width: 56px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-link.active {
+    color: var(--purple-400);
+  }
+
+  .bottom-nav-link svg {
+    stroke: currentColor;
+    transition: transform var(--transition-fast);
+  }
+
+  .bottom-nav-link.active svg {
+    stroke: var(--purple-400);
+    filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.5));
+  }
+
+  .bottom-nav-link:active svg { transform: scale(0.88); }
+
+  /* Body padding for bottom nav */
+  body { padding-bottom: max(72px, calc(64px + env(safe-area-inset-bottom))); }
+
+  /* Toast above bottom nav */
+  .toast {
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    max-width: 100%;
+  }
+
+  /* Profile header mobile stack */
+  .profile-header-grid {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 20px !important;
+  }
+
+  .profile-header-grid > div:last-child {
+    margin-left: 0 !important;
+    text-align: center !important;
+    width: 100%;
+  }
+
+  .profile-header-grid > div:last-child .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Profile tab bar scrollable */
+  .profile-tabs-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .profile-tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 10px 16px !important;
+    font-size: 0.82rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Profile hero less padding on mobile */
+  .profile-hero {
+    padding: 90px 0 32px !important;
+  }
+
+  /* Footer tweak */
+  .footer { padding: var(--space-12) 0 var(--space-6); }
+  .footer-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
+/* ——— Touch improvements (all sizes) ——— */
+.btn, button, a, input, select, textarea, label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ——— iOS Safe Areas ——— */
+@supports (padding: env(safe-area-inset-top)) {
+  .navbar {
+    padding-top: max(var(--space-4), env(safe-area-inset-top));
+  }
+}
+
+/* ——— Very small phones (320px) ——— */
+@media (max-width: 380px) {
+  .btn-lg { padding: 12px 20px !important; font-size: 0.9rem !important; }
+  .section-title { font-size: 1.5rem; }
+  .container { padding: 0 12px; }
+  .bottom-nav-link { padding: 6px 8px; min-width: 48px; font-size: 0.6rem; }
+}

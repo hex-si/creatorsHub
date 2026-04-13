@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore Services — CreatorHub</title>
+  <meta name="description" content="Browse all verified local creator services. Filter by category, price, and delivery time. Hire instantly." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7C3AED" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="CreatorHub" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/explore.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Creator<span>Hub</span></a>
+        <ul class="navbar-nav">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="explore.html" class="nav-link active">Explore</a></li>
+          <li><a href="products.html" class="nav-link">Products</a></li>
+          <li><a href="become-seller.html" class="nav-link">Become a Seller</a></li>
+          <li><a href="orders.html" class="nav-link">Track Order</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <a href="#" class="btn btn-ghost btn-sm" id="authLoginBtn" onclick="openAuthModal()">Sign in</a>
+          <a href="become-seller.html" class="btn btn-primary btn-sm">Sell on CreatorHub</a>
+          <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="explore.html" class="nav-link">Explore Services</a>
+    <a href="products.html" class="nav-link">🛍️ Products</a>
+    <a href="become-seller.html" class="nav-link">Become a Seller</a>
+    <a href="request.html" class="nav-link">Request a Service</a>
+    <a href="orders.html" class="nav-link">Track Order</a>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-bg"></div>
+    <div class="container">
+      <div class="page-header-content">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <span>›</span>
+          <span>Explore</span>
+        </div>
+        <h1 class="page-title">Explore <span class="text-gradient">Services</span></h1>
+        <p class="page-subtitle">Admin-approved, quality-guaranteed. Find exactly what you need.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="explore-main">
+    <div class="container">
+      <!-- Search Bar -->
+      <div class="explore-search-wrap">
+        <div class="search-bar">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="searchInput" placeholder="Search services, skills, or creators..." class="search-input" />
+          <button class="search-clear" id="searchClear" style="display:none">✕</button>
+        </div>
+        <div class="explore-meta">
+          <span id="resultsCount" class="results-count">Loading...</span>
+          <select id="sortSelect" class="sort-select">
+            <option value="default">Sort: Popular</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="delivery">Fastest Delivery</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="explore-layout">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar" id="filtersSidebar">
+          <div class="filters-header">
+            <h3 class="filters-title">Filters</h3>
+            <button class="btn btn-ghost btn-sm" id="clearFiltersBtn">Clear All</button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <div class="filter-group-label">Category</div>
+            <div class="filter-options" id="categoryFilters">
+              <label class="filter-option">
+                <input type="radio" name="category" value="all" checked id="cat-all" />
+                <span class="filter-option-content">
+                  <span class="filter-option-icon">🌐</span>
+                  <span>All Categories</span>
+                  <span class="filter-count" id="count-all"></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="filter-group">
+            <div class="filter-group-label">Price Range</div>
+            <div class="price-inputs">
+              <div class="price-input-wrap">
+                <span class="price-prefix">₹</span>
+                <input type="number" id="priceMin" placeholder="Min" class="price-input form-control" min="0" />
+              </div>
+              <span class="price-dash">—</span>
+              <div class="price-input-wrap">
+                <span class="price-prefix">₹</span>
+                <input type="number" id="priceMax" placeholder="Max" class="price-input form-control" min="0" />
+              </div>
+            </div>
+            <div class="price-presets">
+              <button class="price-preset" data-min="0" data-max="500">Under ₹500</button>
+              <button class="price-preset" data-min="500" data-max="1500">₹500–1.5k</button>
+              <button class="price-preset" data-min="1500" data-max="5000">₹1.5k–5k</button>
+              <button class="price-preset" data-min="5000" data-max="">₹5k+</button>
+            </div>
+          </div>
+
+          <!-- Delivery Filter -->
+          <div class="filter-group">
+            <div class="filter-group-label">Delivery Time</div>
+            <div class="filter-options">
+              <label class="filter-option">
+                <input type="radio" name="delivery" value="all" checked id="del-all" />
+                <span class="filter-option-content"><span>Any time</span></span>
+              </label>
+              <label class="filter-option">
+                <input type="radio" name="delivery" value="1" id="del-1" />
+                <span class="filter-option-content"><span>⚡ Express (1 day)</span></span>
+              </label>
+              <label class="filter-option">
+                <input type="radio" name="delivery" value="3" id="del-3" />
+                <span class="filter-option-content"><span>🔥 Fast (up to 3 days)</span></span>
+              </label>
+              <label class="filter-option">
+                <input type="radio" name="delivery" value="7" id="del-7" />
+                <span class="filter-option-content"><span>📅 Within a week</span></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Mobile Apply Button -->
+          <button class="btn btn-primary w-full" id="applyFiltersBtn" style="margin-top:var(--space-4); display:none">
+            Apply Filters
+          </button>
+        </aside>
+
+        <!-- Services Grid -->
+        <div class="explore-content">
+          <!-- Category Chips (quick filters) -->
+          <div class="category-chips" id="categoryChips"></div>
+
+          <!-- Grid -->
+          <div class="services-grid-explore" id="servicesGrid"></div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState" style="display:none">
+            <div class="empty-icon">🔍</div>
+            <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:var(--space-3)">No services found</h3>
+            <p class="text-secondary" style="margin-bottom:var(--space-5)">Try adjusting your filters or search term</p>
+            <button class="btn btn-outline" id="resetFiltersBtn">Reset All Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Filter Toggle -->
+  <button class="filter-fab" id="filterFab" aria-label="Open filters">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    Filters
+  </button>
+
+  <!-- Filter Overlay (mobile) -->
+  <div class="filter-overlay" id="filterOverlay" style="display:none"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:var(--space-6); border-top:1px solid var(--border-subtle)">
+        <span>© <span id="footerYear"></span> CreatorHub. All rights reserved.</span><script>document.getElementById('footerYear').textContent=new Date().getFullYear();</script>
+        <a href="index.html" style="color:var(--purple-400)">Back to Home</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/firebase-init.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/pwa.js" defer></script>
+  <script src="js/explore.js"></script>
+</body>
+</html>

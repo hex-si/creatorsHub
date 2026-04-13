@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Profile — CreatorHub</title>
+  <meta name="description" content="View seller profile, portfolio, and service packages on CreatorHub." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/seller.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Creator<span>Hub</span></a>
+        <ul class="navbar-nav">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="explore.html" class="nav-link">Explore</a></li>
+          <li><a href="become-seller.html" class="nav-link">Become a Seller</a></li>
+          <li><a href="orders.html" class="nav-link">Track Order</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <a href="explore.html" class="btn btn-outline btn-sm">← All Services</a>
+          <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="explore.html" class="nav-link">Explore Services</a>
+    <a href="become-seller.html" class="nav-link">Become a Seller</a>
+    <a href="request.html" class="nav-link">Request a Service</a>
+    <a href="orders.html" class="nav-link">Track Order</a>
+  </div>
+
+  <!-- Profile Content (rendered by JS) -->
+  <main id="profileMain">
+    <div class="profile-loading">
+      <div class="loading-spinner"></div>
+      <p class="text-muted">Loading profile...</p>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" style="display:none">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <button class="lightbox-prev" id="lightboxPrev">‹</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <button class="lightbox-next" id="lightboxNext">›</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top:var(--space-20)">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:var(--space-6); border-top:1px solid var(--border-subtle)">
+        <span>© 2025 CreatorHub. All rights reserved.</span>
+        <a href="explore.html" style="color:var(--purple-400)">← Back to Explore</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/seller.js"></script>
+</body>
+</html>

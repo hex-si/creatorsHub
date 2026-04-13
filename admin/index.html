@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreatorHub Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Authenticaton Gateway -->
+  <div id="authGate" class="auth-wrapper">
+    <div class="glass-panel login-card">
+      <div class="brand">
+        <div class="logo">Creator<span>Hub</span></div>
+        <p class="subtitle">Secure Command Center</p>
+      </div>
+      
+      <div class="input-group">
+        <label>Admin Email</label>
+        <input type="email" id="adminEmail" placeholder="superadmin@creatorhub.com" class="input-field" autocomplete="email" />
+      </div>
+      <div class="input-group" style="margin-bottom: 24px;">
+        <label>Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="••••••••" class="input-field" autocomplete="current-password" />
+      </div>
+      
+      <button id="loginBtn" class="btn btn-primary w-full">Access Command Center</button>
+      <div id="authError" class="auth-error text-red"></div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard (Hidden until auth) -->
+  <div id="dashboard" class="dashboard-wrapper hidden">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">Creator<span>Hub</span></div>
+      </div>
+      <div class="user-profile">
+        <div class="avatar" id="adminAvatar">A</div>
+        <div class="user-info">
+          <div class="name" id="adminName">Admin User</div>
+          <div class="role text-xs text-purple">Super Administrator</div>
+        </div>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-tab="overview">
+          <span class="icon">📊</span> Overview
+        </a>
+        <a href="#" class="nav-item" data-tab="verifications">
+          <span class="icon">🛡️</span> Verifications <span id="verificationCount" class="badge-count">0</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="users">
+          <span class="icon">👥</span> Manage Users
+        </a>
+        <a href="#" class="nav-item" data-tab="services">
+          <span class="icon">💼</span> Content Moderation
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn btn-ghost w-full">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <header class="topbar">
+        <h2>Command Center</h2>
+        <div class="time-widget" id="timeWidget">--:--</div>
+      </header>
+      
+      <div class="content-body wrapper-tabs">
+        
+        <!-- Overview Tab -->
+        <section id="tab-overview" class="tab-pane active">
+          <div class="stats-grid">
+            <div class="stat-card glass-panel">
+              <div class="stat-title">Total Users</div>
+              <div class="stat-value" id="statUsers">--</div>
+            </div>
+            <div class="stat-card glass-panel">
+              <div class="stat-title">Verified Sellers</div>
+              <div class="stat-value text-green" id="statSellers">--</div>
+            </div>
+            <div class="stat-card glass-panel">
+              <div class="stat-title">Active Services</div>
+              <div class="stat-value text-purple" id="statServices">--</div>
+            </div>
+          </div>
+
+          <div class="glass-panel" style="margin-top: 24px; padding: 24px;">
+            <h3>System Status</h3>
+            <p class="text-muted">Database connection established. Secure Row Level Security constraints active.</p>
+          </div>
+        </section>
+
+        <!-- Verifications Tab -->
+        <section id="tab-verifications" class="tab-pane">
+          <div class="panel-header">
+            <h3>Pending Identity Verifications</h3>
+            <p class="text-muted">Review incoming requests for Seller privileges.</p>
+          </div>
+          
+          <div class="table-container glass-panel">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Applied On</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="verificationsTableBody">
+                <tr><td colspan="5" style="text-align:center; padding: 40px; color:var(--text-muted);">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Manage Users Tab -->
+        <section id="tab-users" class="tab-pane">
+          <div class="panel-header">
+            <h3>User Directory</h3>
+          </div>
+          <div class="table-container glass-panel">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Profile</th>
+                  <th>Verification</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="5" style="text-align:center; padding: 40px;">No data loaded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Services Tab -->
+        <section id="tab-services" class="tab-pane">
+          <div class="panel-header">
+            <h3>Content Moderation</h3>
+          </div>
+          <div class="grid" id="servicesGrid">
+            <!-- Services will inject here -->
+            <p style="color:var(--text-muted);">Fetching content cluster...</p>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="globalLoader" class="loader-overlay hidden">
+    <div class="spinner"></div>
+    <div class="text">Processing Data Request...</div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- We point back to the root config file to reuse the Supabase keys -->
+  <script src="../js/config.js"></script>
+  
+  <script src="js/admin.js"></script>
+</body>
+</html>

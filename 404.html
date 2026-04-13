@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — CreatorHub</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7C3AED" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  <style>
+    .not-found-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--gradient-hero);
+      position: relative;
+      overflow: hidden;
+    }
+    .not-found-page::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .nf-code {
+      font-family: var(--font-heading);
+      font-size: clamp(6rem, 20vw, 10rem);
+      font-weight: 900;
+      background: var(--gradient-purple);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .nf-emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .nf-title { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; margin-bottom: 12px; }
+    .nf-subtitle { color: var(--text-secondary); font-size: 1.05rem; max-width: 400px; margin: 0 auto 36px; line-height: 1.6; }
+    .nf-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .nf-links { margin-top: 40px; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .nf-link { color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s; }
+    .nf-link:hover { color: var(--purple-400); }
+  </style>
+</head>
+<body>
+  <div class="not-found-page">
+    <span class="nf-emoji">⚡</span>
+    <div class="nf-code">404</div>
+    <h1 class="nf-title">This page doesn't exist</h1>
+    <p class="nf-subtitle">The page you're looking for may have moved or never existed. Let's get you back on track.</p>
+    <div class="nf-actions">
+      <a href="index.html" class="btn btn-primary btn-lg">← Back to Home</a>
+      <a href="explore.html" class="btn btn-outline btn-lg">Browse Services</a>
+    </div>
+    <div class="nf-links">
+      <a href="explore.html" class="nf-link">Explore</a>
+      <a href="products.html" class="nf-link">Products</a>
+      <a href="become-seller.html" class="nf-link">Become a Seller</a>
+      <a href="orders.html" class="nf-link">Track Order</a>
+      <a href="request.html" class="nf-link">Request a Service</a>
+    </div>
+  </div>
+  <script src="js/nav.js" defer></script>
+  <script src="js/pwa.js" defer></script>
+</body>
+</html>

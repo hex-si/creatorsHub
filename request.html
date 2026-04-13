@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request a Service — CreatorHub</title>
+  <meta name="description" content="Submit a custom service request on CreatorHub. Tell us what you need, your budget, and deadline. We'll match you with the perfect creator." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7C3AED" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="CreatorHub" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+</head>
+<body>
+  <nav class="navbar scrolled">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">Creator<span>Hub</span></a>
+        <ul class="navbar-nav">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="explore.html" class="nav-link">Explore</a></li>
+          <li><a href="become-seller.html" class="nav-link">Become a Seller</a></li>
+          <li><a href="orders.html" class="nav-link">Track Order</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <a href="explore.html" class="btn btn-outline btn-sm">Browse Services</a>
+          <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="explore.html" class="nav-link">Explore Services</a>
+    <a href="become-seller.html" class="nav-link">Become a Seller</a>
+    <a href="request.html" class="nav-link">Request a Service</a>
+    <a href="orders.html" class="nav-link">Track Order</a>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-bg" style="background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.15) 0%, transparent 65%)"></div>
+    <div class="container">
+      <div class="page-header-content" style="max-width:640px">
+        <div class="section-label">On-Demand Engine</div>
+        <h1 class="page-title">Request <span class="text-gradient-gold">Anything</span></h1>
+        <p class="page-subtitle">Can't find what you need in our marketplace? Tell us exactly what you want and we'll match you with the perfect local creator.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="request-layout">
+
+        <!-- Form -->
+        <div>
+          <div class="request-form-card" id="requestFormCard">
+            <h2 class="request-form-title">Tell Us What You Need</h2>
+            <p class="request-form-subtitle">Be as specific as possible — the more detail you give, the better we can match you.</p>
+
+            <form id="requestForm" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="requestDesc">What do you need? *</label>
+                <textarea id="requestDesc" name="requestDesc" class="form-control" 
+                  placeholder="e.g. 'I need a 60-second Instagram reel edit for my restaurant. I have raw footage, need background music, captions, and color grading. Looking for a cinematic style.'"
+                  rows="6" required></textarea>
+                <div class="char-counter"><span id="descCount">0</span> characters</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="requestCategory">Category *</label>
+                <select id="requestCategory" name="requestCategory" class="form-control" required>
+                  <option value="" disabled selected>What type of service?</option>
+                  <option value="creative">🎨 Creative (Design, Video, Art)</option>
+                  <option value="student">📚 Student Services (Tutoring, Assignments)</option>
+                  <option value="business">📈 Business Growth (Marketing, Strategy)</option>
+                  <option value="products">📦 Products (Handmade, Physical goods)</option>
+                  <option value="other">🔮 Other / Not Sure</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="requestBudget">Your Budget (₹) *</label>
+                  <div style="position:relative">
+                    <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:700;pointer-events:none">₹</span>
+                    <input type="number" id="requestBudget" name="requestBudget" class="form-control" 
+                      placeholder="e.g. 2000" min="100" style="padding-left:32px" required />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="requestDeadline">Deadline *</label>
+                  <input type="date" id="requestDeadline" name="requestDeadline" class="form-control" required />
+                </div>
+              </div>
+
+              <div style="padding: var(--space-4) 0; border-top:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle); margin-bottom:var(--space-5)">
+                <div class="form-step-subtitle" style="font-size:0.875rem; margin-bottom:var(--space-4)">Your Contact Info</div>
+                <div class="form-row">
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="reqName">Your Name *</label>
+                    <input type="text" id="reqName" name="reqName" class="form-control" placeholder="Full name" required />
+                  </div>
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="reqWhatsapp">WhatsApp Number *</label>
+                    <input type="tel" id="reqWhatsapp" name="reqWhatsapp" class="form-control" placeholder="10-digit number" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-help-note">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Our admin reviews your request within a few hours and matches you with the best available creator. You'll be contacted on WhatsApp.
+              </div>
+
+              <button type="submit" class="btn btn-gold btn-lg w-full" id="submitRequestBtn">
+                ⚡ Submit Request
+              </button>
+            </form>
+
+            <!-- Success -->
+            <div id="requestSuccess" style="display:none; text-align:center; padding:var(--space-10) var(--space-4)">
+              <div style="font-size:4rem; margin-bottom:var(--space-5); animation: float 3s ease-in-out infinite; display:block">⚡</div>
+              <h2 style="font-family:var(--font-heading); font-size:1.75rem; font-weight:800; margin-bottom:var(--space-3)">Request Submitted!</h2>
+              <p style="color:var(--text-secondary); margin-bottom:var(--space-4)">Your reference number:</p>
+              <div id="refNumber" style="font-family:var(--font-heading); font-size:1.5rem; font-weight:900; color:var(--gold-400); letter-spacing:0.05em; padding:var(--space-4) var(--space-6); background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-lg); margin-bottom:var(--space-6); display:inline-block"></div>
+              <p style="color:var(--text-secondary); font-size:0.9375rem; line-height:1.7; margin-bottom:var(--space-8)">
+                Our admin is reviewing your request. We'll reach out to you on WhatsApp within a few hours with a matched creator and pricing details.
+              </p>
+              <div style="display:flex; gap:var(--space-3); justify-content:center; flex-wrap:wrap">
+                <a href="orders.html" class="btn btn-primary">Track Your Order</a>
+                <a href="explore.html" class="btn btn-outline">Browse Services</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside style="position:sticky; top:90px">
+          <div class="glass-card" style="padding:var(--space-6); margin-bottom:var(--space-4)">
+            <h3 style="font-family:var(--font-heading); font-size:1rem; font-weight:700; margin-bottom:var(--space-4); padding-bottom:var(--space-3); border-bottom:1px solid var(--border-subtle)">⚡ How It Works</h3>
+            <div style="display:flex; flex-direction:column; gap:var(--space-4)">
+              <div style="display:flex; gap:var(--space-3); align-items:flex-start">
+                <div style="width:28px; height:28px; border-radius:50%; background:var(--gradient-purple); color:white; font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0">1</div>
+                <div>
+                  <div style="font-weight:600; font-size:0.9rem">Submit Your Request</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px">Describe what you need, budget, and deadline.</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:var(--space-3); align-items:flex-start">
+                <div style="width:28px; height:28px; border-radius:50%; background:var(--gradient-purple); color:white; font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0">2</div>
+                <div>
+                  <div style="font-weight:600; font-size:0.9rem">Admin Matches You</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px">We find the best creator from our verified network.</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:var(--space-3); align-items:flex-start">
+                <div style="width:28px; height:28px; border-radius:50%; background:var(--gradient-purple); color:white; font-size:0.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0">3</div>
+                <div>
+                  <div style="font-weight:600; font-size:0.9rem">Work Gets Done</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px">Creator delivers on time. You get quality work.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card" style="padding:var(--space-6)">
+            <h3 style="font-family:var(--font-heading); font-size:1rem; font-weight:700; margin-bottom:var(--space-4); padding-bottom:var(--space-3); border-bottom:1px solid var(--border-subtle)">Popular Requests</h3>
+            <div style="display:flex; flex-direction:column; gap:var(--space-3)">
+              <div class="popular-request-chip" onclick="fillExample('Logo design for my startup, modern and minimal style. Budget: ₹1500')">🎨 Logo Design</div>
+              <div class="popular-request-chip" onclick="fillExample('Instagram reel editing — 60 second highlight video from my event footage. Need music and captions.')">🎬 Video Editing</div>
+              <div class="popular-request-chip" onclick="fillExample('Maths tutoring for Class 12 boards — 1 hour session for calculus doubts.')">📚 Maths Tutoring</div>
+              <div class="popular-request-chip" onclick="fillExample('Monthly social media management for my small business. Need 15 posts, captions, and basic strategy.')">📈 Social Media</div>
+              <div class="popular-request-chip" onclick="fillExample('Investor pitch deck design — 12 slides for my food startup. Need professional slides with financials.')">💼 Pitch Deck</div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:var(--space-6); border-top:1px solid var(--border-subtle)">
+        <span>© <span id="footerYear"></span> CreatorHub. All rights reserved.</span><script>document.getElementById('footerYear').textContent=new Date().getFullYear();</script>
+        <a href="index.html" style="color:var(--purple-400)">Back to Home</a>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .popular-request-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-secondary);
+    }
+    .popular-request-chip:hover {
+      background: rgba(124,58,237,0.08);
+      border-color: var(--border-accent);
+      color: var(--text-primary);
+    }
+  </style>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js" defer></script>
+  <script src="js/pwa.js" defer></script>
+  <script src="js/request.js"></script>
+</body>
+</html>
