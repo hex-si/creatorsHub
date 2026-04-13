@@ -80,17 +80,24 @@ async function handleLogin() {
   showLoader('Verifying Credentials...');
   errDiv.innerText = "";
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
 
-  if (error) {
-    errDiv.innerText = error.message;
-    hideLoader();
-  } else {
-    adminSession = data.session;
-    showDashboard();
+    if (error) {
+      errDiv.innerText = error.message;
+    } else if (!data || !data.session) {
+      errDiv.innerText = "Login succeeded but no active session was returned. Did you confirm your email?";
+    } else {
+      adminSession = data.session;
+      showDashboard();
+    }
+  } catch (err) {
+    console.error("Login Exception:", err);
+    errDiv.innerText = "A critical error occurred: " + err.message;
+  } finally {
     hideLoader();
   }
 }

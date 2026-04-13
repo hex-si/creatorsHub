@@ -2,16 +2,20 @@
 // pwa.js — CreatorHub PWA: Install Prompt + Push Notifications
 // ============================================================
 
-// ——— Service Worker Registration ———
+// ——— Service Worker Registration (REPLACED WITH UNREGISTER) ———
 async function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) return null;
-  try {
-    const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-    return reg;
-  } catch (err) {
-    console.warn('[PWA] SW registration failed:', err);
-    return null;
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const reg of registrations) {
+        await reg.unregister();
+      }
+      console.log('[PWA] Service Worker unregistered forcefully to clear aggressive cache traps.');
+    } catch (e) {
+      console.warn('[PWA] SW unregister error:', e);
+    }
   }
+  return null;
 }
 
 // ——— Install Prompt ———

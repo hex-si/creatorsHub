@@ -23,6 +23,7 @@ function triggerAuthRender(session) {
   
   if (session && session.user) {
     // User is Logged In
+    window.userLoggedIn = true;
     const userMetadata = session.user.user_metadata || {};
     const avatarUrl = userMetadata.avatar_url || `https://ui-avatars.com/api/?name=${userMetadata.full_name || 'User'}&background=7C3AED&color=fff&size=200&bold=true`;
     const fullName = userMetadata.full_name || session.user.email.split('@')[0];
@@ -41,6 +42,7 @@ function triggerAuthRender(session) {
     });
   } else {
     // User is Logged Out
+    window.userLoggedIn = false;
     authBtns.forEach(btn => {
       btn.outerHTML = `<a href="#" class="btn btn-ghost btn-sm" id="authLoginBtn" onclick="openAuthModal()">Sign in</a>`;
     });

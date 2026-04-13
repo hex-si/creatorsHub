@@ -1,138 +1,25 @@
 // ============================================================
-// sw.js — CreatorHub Service Worker
-// Handles: caching, offline fallback, push notifications
+// sw.js — Self-Destruct Sequence
 // ============================================================
 
-const CACHE_NAME = 'creatorhub-v1.4.0';
-const OFFLINE_URL = '/404.html';
-
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/explore.html',
-  '/products.html',
-  '/profile.html',
-  '/become-seller.html',
-  '/orders.html',
-  '/request.html',
-  '/seller.html',
-  '/admin.html',
-  '/404.html',
-  '/css/main.css',
-  '/css/home.css',
-  '/css/explore.css',
-  '/css/products.css',
-  '/css/forms.css',
-  '/css/orders.css',
-  '/css/seller.css',
-  '/css/admin.css',
-  '/js/data.js',
-  '/js/auth.js',
-  '/js/home.js',
-  '/js/explore.js',
-  '/js/products.js',
-  '/js/profile.js',
-  '/js/nav.js',
-  '/js/pwa.js',
-  '/icon-192.png',
-  '/icon-512.png',
-];
-
-// ——— Install: Pre-cache static assets ———
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      // Add assets individually so one failure doesn't break all caching
-      return Promise.allSettled(
-        STATIC_ASSETS.map(url => cache.add(url).catch(() => {}))
-      );
-    })
-  );
+  console.log('[SW] Installing self-destruct worker...');
   self.skipWaiting();
 });
 
-// ——— Activate: Clean up old caches ———
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) =>
-      Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      )
-    )
-  );
-  self.clients.claim();
-});
-
-// ——— Fetch: Bypassed to prevent ERR_FAILED crashes ———
-self.addEventListener('fetch', (event) => {
-  // We provide a transparent passthrough instead of custom respondWith
-  // to prevent cache matching logic from breaking live navigation.
-  return;
-});
-
-// ——— Push Notifications ———
-self.addEventListener('push', (event) => {
-  let data = {
-    title: 'CreatorHub',
-    body: 'You have a new update.',
-    icon: '/icon-192.png',
-    badge: '/icon-192.png',
-    url: '/',
-    tag: 'creatorhub',
-  };
-
-  try {
-    if (event.data) {
-      const parsed = event.data.json();
-      data = { ...data, ...parsed };
-    }
-  } catch (e) {}
-
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: data.icon,
-      badge: data.badge,
-      data: { url: data.url },
-      tag: data.tag,
-      renotify: true,
-      vibrate: [200, 100, 200],
-      actions: [
-        { action: 'open', title: '👀 View' },
-        { action: 'dismiss', title: 'Dismiss' },
-      ],
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          console.log('[SW] Deleting cache:', cacheName);
+          return caches.delete(cacheName);
+        })
+      );
+    }).then(() => {
+      console.log('[SW] Unregistering service worker...');
+      return self.registration.unregister();
     })
   );
-});
-
-// ——— Notification Click ———
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  if (event.action === 'dismiss') return;
-
-  const targetUrl = event.notification.data?.url || '/';
-
-  event.waitUntil(
-    clients
-      .matchAll({ type: 'window', includeUncontrolled: true })
-      .then((clientList) => {
-        for (const client of clientList) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            client.navigate(targetUrl);
-            return client.focus();
-          }
-        }
-        return clients.openWindow(targetUrl);
-      })
-  );
-});
-
-// ——— Background Sync (future: retry failed orders) ———
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-orders') {
-    // Placeholder for future order sync logic
-    console.log('[SW] Background sync: sync-orders');
-  }
+  self.clients.claim();
 });
