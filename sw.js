@@ -1,25 +1,23 @@
-// ============================================================
-// sw.js — Self-Destruct Sequence
-// ============================================================
+// sw.js - SELF-DESTRUCT WORKER
+// This service worker instantly deletes all caches and unregisters itself 
+// to permanently resolve ERR_FAILED and stuck-cache issues across all browsers.
 
-self.addEventListener('install', (event) => {
-  console.log('[SW] Installing self-destruct worker...');
+self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          console.log('[SW] Deleting cache:', cacheName);
-          return caches.delete(cacheName);
-        })
-      );
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => caches.delete(key)));
     }).then(() => {
-      console.log('[SW] Unregistering service worker...');
       return self.registration.unregister();
     })
   );
   self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  // Transparent passthrough.
+  return;
 });

@@ -3,6 +3,9 @@
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Purge legacy mockup cache to aggressively destroy "Priya" mock data
+  localStorage.removeItem('creatorHubUser');
+  
   // Listen for Supabase session changes globally
   if (typeof supabaseClient !== 'undefined') {
     supabaseClient.auth.onAuthStateChange((event, session) => {
