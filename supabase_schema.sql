@@ -16,7 +16,9 @@ CREATE TABLE public.sellers (
     verified BOOLEAN DEFAULT FALSE,
     featured BOOLEAN DEFAULT FALSE,
     stats JSONB DEFAULT '{"ordersCompleted": 0, "avgDelivery": "0 days", "responseRate": "100%"}',
-    features TEXT[] DEFAULT '{}'
+    features TEXT[] DEFAULT '{}',
+    portfolio JSONB DEFAULT '[]',
+    packages JSONB DEFAULT '[]'
 );
 
 -- Table: services
@@ -82,6 +84,18 @@ CREATE TABLE public.seller_applications (
     suggested_pricing TEXT,
     applied_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     status TEXT DEFAULT 'pending'
+);
+
+-- Table: testimonials
+CREATE TABLE public.testimonials (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    role TEXT,
+    avatar TEXT,
+    text TEXT NOT NULL,
+    rating INT DEFAULT 5,
+    service TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Note: RLS (Row Level Security) policies should be added as per your application's security requirements.

@@ -5,10 +5,10 @@
 let currentLightboxIndex = 0;
 let portfolioItems = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initMobileNav();
-  loadSellerProfile();
+  await loadSellerProfile();
 });
 
 function initNavbar() {
@@ -27,27 +27,42 @@ function initMobileNav() {
   closeBtn?.addEventListener('click', () => mobileNav.classList.remove('open'));
 }
 
-function loadSellerProfile() {
+async function loadSellerProfile() {
   const params = new URLSearchParams(window.location.search);
-  const sellerId = params.get('id') || 'seller-1';
-
-  const seller = SELLERS.find(s => s.id === sellerId);
+  const sellerId = params.get('id');
   const main = document.getElementById('profileMain');
 
-  if (!seller) {
+  if (!sellerId) {
     main.innerHTML = `
-      <div class="seller-not-found container">
+      <div class="seller-not-found container" style="text-align:center; padding: 100px 20px;">
         <div style="font-size:4rem">😕</div>
-        <h2>Seller not found</h2>
-        <p class="text-secondary">This seller profile doesn't exist yet.</p>
+        <h2>Profile Not Specified</h2>
+        <p class="text-secondary">No user ID was provided in the URL.</p>
         <a href="explore.html" class="btn btn-primary" style="margin-top:var(--space-4)">Browse All Services</a>
       </div>
     `;
     return;
   }
 
-  const sellerServices = SERVICES.filter(s => s.sellerId === seller.id);
+  main.innerHTML = '<p style="padding:100px; text-align:center; color:var(--text-muted);">Loading profile...</p>';
+
+  const seller = await getSellerById(sellerId);
+
+  if (!seller) {
+    main.innerHTML = `
+      <div class="seller-not-found container" style="text-align:center; padding: 100px 20px;">
+        <div style="font-size:4rem">😕</div>
+        <h2>Seller not found</h2>
+        <p class="text-secondary">This creator may have been removed or the ID is incorrect.</p>
+        <a href="explore.html" class="btn btn-primary" style="margin-top:var(--space-4)">Browse All Services</a>
+      </div>
+    `;
+    return;
+  }
+
+  const sellerServices = await getServices(seller.id);
   portfolioItems = seller.portfolio || [];
+  const pkgs = seller.packages || [];
 
   // Update page title
   document.title = `${seller.name} — CreatorHub`;
@@ -97,15 +112,15 @@ function loadSellerProfile() {
         <!-- Stats Bar -->
         <div class="profile-stats-bar">
           <div class="profile-stat">
-            <span class="profile-stat-value">${seller.stats.ordersCompleted}</span>
+            <span class="profile-stat-value">${seller.stats?.ordersCompleted || 0}</span>
             <span class="profile-stat-label">Orders Completed</span>
           </div>
           <div class="profile-stat">
-            <span class="profile-stat-value">${seller.stats.avgDelivery}</span>
+            <span class="profile-stat-value">${seller.stats?.avgDelivery || 'N/A'}</span>
             <span class="profile-stat-label">Avg. Delivery Time</span>
           </div>
           <div class="profile-stat">
-            <span class="profile-stat-value">${seller.stats.responseRate}</span>
+            <span class="profile-stat-value">${seller.stats?.responseRate || '100%'}</span>
             <span class="profile-stat-label">Response Rate</span>
           </div>
         </div>
@@ -170,16 +185,16 @@ function loadSellerProfile() {
           <div class="packages-sidebar">
             <h2 class="profile-section-title">💎 Service Packages</h2>
             <div class="packages-grid">
-              ${seller.packages.map((pkg, i) => `
+              ${pkgs.length > 0 ? pkgs.map((pkg, i) => `
                 <div class="package-card ${i === 1 ? 'featured-pkg' : ''}" id="pkg-${i}">
                   <div class="package-name">${pkg.name}</div>
-                  <div class="package-price">₹${pkg.price.toLocaleString('en-IN')}</div>
+                  <div class="package-price">₹${(pkg.price || 0).toLocaleString('en-IN')}</div>
                   <div class="package-timeline">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                     Delivery in ${pkg.timeline}
                   </div>
                   <ul class="package-deliverables">
-                    ${pkg.deliverables.map(d => `<li class="package-deliverable">${d}</li>`).join('')}
+                    ${(pkg.deliverables || []).map(d => `<li class="package-deliverable">${d}</li>`).join('')}
                   </ul>
                   <a href="https://wa.me/${seller.whatsapp}?text=Hi%20${encodeURIComponent(seller.name)}%2C%20I%27d%20like%20to%20order%20your%20${encodeURIComponent(pkg.name)}%20package%20(₹${pkg.price})%20from%20CreatorHub."
                      target="_blank" rel="noopener"
@@ -187,7 +202,7 @@ function loadSellerProfile() {
                     ${i === 1 ? '⚡ Hire Now' : 'Select Package'}
                   </a>
                 </div>
-              `).join('')}
+              `).join('') : '<p class="text-secondary text-sm">No custom packages listed.</p>'}
             </div>
 
             <!-- Contact Card -->

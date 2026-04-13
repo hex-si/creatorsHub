@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS sellers (
   verified boolean DEFAULT false,
   featured boolean DEFAULT false,
   stats jsonb DEFAULT '{}'::jsonb,
-  features text[] DEFAULT '{}'
+  features text[] DEFAULT '{}',
+  portfolio jsonb DEFAULT '[]'::jsonb,
+  packages jsonb DEFAULT '[]'::jsonb
 );
 
 CREATE TABLE IF NOT EXISTS seller_applications (
@@ -42,6 +44,17 @@ CREATE TABLE IF NOT EXISTS seller_applications (
   suggested_pricing text,
   applied_date timestamp with time zone DEFAULT now(),
   status text DEFAULT 'pending'
+);
+
+CREATE TABLE IF NOT EXISTS testimonials (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  role text,
+  avatar text,
+  text text NOT NULL,
+  rating int DEFAULT 5,
+  service text,
+  created_at timestamp with time zone DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS services (

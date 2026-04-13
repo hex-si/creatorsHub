@@ -1,7 +1,10 @@
 // ============================================================
-// data.js — CreatorHub Mock Data Store (INR Currency)
+// data.js — Supabase Live Data Wrappers
+// All global mock arrays have been removed per architecture upgrade.
 // ============================================================
 
+// Categories remain static because they represent application navigation state,
+// rather than dynamic user-generated content.
 const CATEGORIES = [
   { id: 'creative', name: 'Creative', icon: '🎨', description: 'Design, art & content creation', color: '#7C3AED', gradient: 'linear-gradient(135deg, #7C3AED, #A855F7)' },
   { id: 'student', name: 'Student Services', icon: '📚', description: 'Tutoring, assignments & research', color: '#2563EB', gradient: 'linear-gradient(135deg, #2563EB, #60A5FA)' },
@@ -9,756 +12,95 @@ const CATEGORIES = [
   { id: 'products', name: 'Products', icon: '📦', description: 'Physical goods & handmade items', color: '#D97706', gradient: 'linear-gradient(135deg, #D97706, #FBBF24)' },
 ];
 
-const SELLERS = [
-  {
-    id: 'seller-1',
-    name: 'Priya Sharma',
-    username: '@priyasharma',
-    avatar: 'https://ui-avatars.com/api/?name=Priya+Sharma&background=7C3AED&color=fff&size=200&bold=true',
-    tagline: 'UI/UX Designer & Brand Strategist',
-    category: 'creative',
-    role: 'Creator',
-    bio: 'Award-winning designer with 5+ years crafting stunning digital experiences. I transform ideas into visuals that convert visitors into customers. Specializing in brand identity, UI design, and social media graphics.',
-    whatsapp: '919876543210',
-    memberSince: 'Jan 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: true,
-    features: ['Brand Identity', 'UI/UX Design', 'Logo Design', 'Social Media Graphics', 'Figma', 'Adobe Illustrator', 'Canva Pro', 'Color Theory'],
-    stats: { ordersCompleted: 47, avgDelivery: '2.3 days', responseRate: '98%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/priya1/600/400', caption: 'Brand Identity Design' },
-      { url: 'https://picsum.photos/seed/priya2/600/400', caption: 'UI Dashboard' },
-      { url: 'https://picsum.photos/seed/priya3/600/400', caption: 'Social Media Kit' },
-      { url: 'https://picsum.photos/seed/priya4/600/400', caption: 'Logo Collection' },
-    ],
-    packages: [
-      { name: 'Basic', price: 999, deliverables: ['Logo design', '2 revisions', 'PNG/SVG files'], timeline: '3 days' },
-      { name: 'Standard', price: 2499, deliverables: ['Logo + brand guide', '5 revisions', 'All formats', 'Color palette'], timeline: '5 days' },
-      { name: 'Premium', price: 4999, deliverables: ['Full brand identity', 'Unlimited revisions', 'Social media kit', 'Business card design'], timeline: '7 days' },
-    ],
-  },
-  {
-    id: 'seller-2',
-    name: 'Arjun Mehta',
-    username: '@arjunmehta',
-    avatar: 'https://ui-avatars.com/api/?name=Arjun+Mehta&background=2563EB&color=fff&size=200&bold=true',
-    tagline: 'Maths & Physics Tutor | IIT Graduate',
-    category: 'student',
-    role: 'Freelancer',
-    bio: 'IIT Bombay graduate with a passion for making complex subjects simple. 3 years of tutoring experience. Helped 100+ students improve their grades significantly.',
-    whatsapp: '919765432109',
-    memberSince: 'Feb 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: true,
-    features: ['JEE Mathematics', 'JEE Physics', 'Class 11–12 Boards', 'Doubt Clearing', 'Study Planning', 'Online Tutoring', 'CBSE / ICSE', 'Problem Solving'],
-    stats: { ordersCompleted: 63, avgDelivery: '1.2 days', responseRate: '100%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/arjun1/600/400', caption: 'Student Results Improvement' },
-      { url: 'https://picsum.photos/seed/arjun2/600/400', caption: 'Study Material Samples' },
-      { url: 'https://picsum.photos/seed/arjun3/600/400', caption: 'Online Session Setup' },
-    ],
-    packages: [
-      { name: 'Basic', price: 499, deliverables: ['1 hour session', 'Topic summary', 'Practice questions'], timeline: '1 day' },
-      { name: 'Standard', price: 1999, deliverables: ['5 hour sessions', 'Full notes', 'Weekly tests', 'Doubt clearing'], timeline: '1 week' },
-      { name: 'Premium', price: 3999, deliverables: ['Monthly tutoring', 'Custom study plan', 'Unlimited doubt sessions', 'Exam preparation'], timeline: '1 month' },
-    ],
-  },
-  {
-    id: 'seller-3',
-    name: 'Kavya Nair',
-    username: '@kavyanair',
-    avatar: 'https://ui-avatars.com/api/?name=Kavya+Nair&background=059669&color=fff&size=200&bold=true',
-    tagline: 'Digital Marketing Expert & SEO Specialist',
-    category: 'business',
-    role: 'Freelancer',
-    bio: 'Helping small businesses grow online with data-driven strategies. Expert in SEO, Instagram marketing, and Google Ads. Generated ₹50L+ in client revenue.',
-    whatsapp: '919654321098',
-    memberSince: 'Mar 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: true,
-    features: ['SEO Optimization', 'Instagram Marketing', 'Google Ads', 'Content Strategy', 'Social Media Management', 'Facebook Ads', 'Email Marketing', 'Analytics'],
-    stats: { ordersCompleted: 29, avgDelivery: '4.1 days', responseRate: '95%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/kavya1/600/400', caption: 'Social Media Growth Results' },
-      { url: 'https://picsum.photos/seed/kavya2/600/400', caption: 'SEO Ranking Reports' },
-      { url: 'https://picsum.photos/seed/kavya3/600/400', caption: 'Ad Campaign Dashboard' },
-    ],
-    packages: [
-      { name: 'Basic', price: 1499, deliverables: ['Instagram audit', 'Content strategy', '10 post captions'], timeline: '3 days' },
-      { name: 'Standard', price: 3499, deliverables: ['Full social media management', '20 posts/month', 'Story templates', 'Monthly report'], timeline: '1 month' },
-      { name: 'Premium', price: 6999, deliverables: ['Full digital marketing', 'SEO optimization', 'Google Ads setup', 'Monthly strategy call'], timeline: '1 month' },
-    ],
-  },
-  {
-    id: 'seller-4',
-    name: 'Rohan Das',
-    username: '@rohandas',
-    avatar: 'https://ui-avatars.com/api/?name=Rohan+Das&background=D97706&color=fff&size=200&bold=true',
-    tagline: 'Handcrafted Leather Goods | Artisan',
-    category: 'products',
-    role: 'Seller',
-    bio: 'Master leather craftsman creating premium handmade leather goods. Each piece is unique, hand-stitched, and built to last a lifetime. Custom orders welcome.',
-    whatsapp: '919543210987',
-    memberSince: 'Jan 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: false,
-    features: ['Leather Crafting', 'Hand Stitching', 'Vegetable Tanning', 'Custom Embossing', 'Wallet Making', 'Bag Making', 'Belt Crafting', 'Gift Packaging'],
-    stats: { ordersCompleted: 18, avgDelivery: '6.5 days', responseRate: '92%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/rohan1/600/400', caption: 'Leather Wallets Collection' },
-      { url: 'https://picsum.photos/seed/rohan2/600/400', caption: 'Custom Bags' },
-      { url: 'https://picsum.photos/seed/rohan3/600/400', caption: 'Leather Journal Covers' },
-      { url: 'https://picsum.photos/seed/rohan4/600/400', caption: 'Belts & Accessories' },
-    ],
-    packages: [
-      { name: 'Basic', price: 799, deliverables: ['Card holder', 'Hand-stitched', 'Choice of color'], timeline: '5 days' },
-      { name: 'Standard', price: 1799, deliverables: ['Bifold wallet', 'Personalized initials', 'Premium leather', 'Gift box'], timeline: '7 days' },
-      { name: 'Premium', price: 3499, deliverables: ['Custom messenger bag', 'Full customization', 'Monogram', 'Gift wrapped'], timeline: '10 days' },
-    ],
-  },
-  {
-    id: 'seller-5',
-    name: 'Sneha Patel',
-    username: '@snehapatel',
-    avatar: 'https://ui-avatars.com/api/?name=Sneha+Patel&background=7C3AED&color=fff&size=200&bold=true',
-    tagline: 'Video Editor & Content Creator',
-    category: 'creative',
-    role: 'Creator',
-    bio: 'Cinematic video editor specializing in reels, YouTube videos, and brand videos. 4 years experience with Adobe Premiere Pro & After Effects. Making your content go viral.',
-    whatsapp: '919432109876',
-    memberSince: 'Apr 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: false,
-    features: ['Adobe Premiere Pro', 'After Effects', 'Color Grading', 'Motion Graphics', 'Instagram Reels', 'YouTube Editing', 'Thumbnail Design', 'Cinematic Edits'],
-    stats: { ordersCompleted: 34, avgDelivery: '2.8 days', responseRate: '96%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/sneha1/600/400', caption: 'Brand Video Edit' },
-      { url: 'https://picsum.photos/seed/sneha2/600/400', caption: 'Instagram Reels Package' },
-      { url: 'https://picsum.photos/seed/sneha3/600/400', caption: 'YouTube Thumbnail Design' },
-    ],
-    packages: [
-      { name: 'Basic', price: 699, deliverables: ['60s reel edit', 'Basic color grading', 'Music sync', 'HD export'], timeline: '2 days' },
-      { name: 'Standard', price: 1999, deliverables: ['3-min video', 'Advanced color grade', 'Motion graphics', 'Captions', 'Thumbnail'], timeline: '4 days' },
-      { name: 'Premium', price: 4499, deliverables: ['Full YouTube video', 'Cinematic edit', 'Custom intro/outro', 'SEO optimization', '3 revisions'], timeline: '7 days' },
-    ],
-  },
-  {
-    id: 'seller-6',
-    name: 'Vikram Singh',
-    username: '@vikramsingh',
-    avatar: 'https://ui-avatars.com/api/?name=Vikram+Singh&background=2563EB&color=fff&size=200&bold=true',
-    tagline: 'Assignment Writing & Research Expert',
-    category: 'student',
-    role: 'Freelancer',
-    bio: 'MBA graduate helping students with research papers, case studies, and project reports. Plagiarism-free, well-referenced work. Delivered 200+ assignments.',
-    whatsapp: '919321098765',
-    memberSince: 'Feb 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: false,
-    features: ['Research Writing', 'Case Studies', 'Report Writing', 'Plagiarism-Free', 'APA / MLA Citation', 'Statistical Analysis', 'MBA Projects', 'Thesis Chapters'],
-    stats: { ordersCompleted: 78, avgDelivery: '1.8 days', responseRate: '97%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/vikram1/600/400', caption: 'Research Paper Samples' },
-      { url: 'https://picsum.photos/seed/vikram2/600/400', caption: 'Case Study Samples' },
-      { url: 'https://picsum.photos/seed/vikram3/600/400', caption: 'Project Report Template' },
-    ],
-    packages: [
-      { name: 'Basic', price: 599, deliverables: ['500-word essay', 'Research included', 'Plagiarism report', '1 revision'], timeline: '1 day' },
-      { name: 'Standard', price: 1499, deliverables: ['2000-word report', 'Full references', 'Plagiarism-free', '2 revisions'], timeline: '2 days' },
-      { name: 'Premium', price: 2999, deliverables: ['5000-word thesis chapter', 'Statistical analysis', 'Citation formatting', 'Unlimited revisions'], timeline: '5 days' },
-    ],
-  },
-  {
-    id: 'seller-7',
-    name: 'Ananya Reddy',
-    username: '@ananyareddy',
-    avatar: 'https://ui-avatars.com/api/?name=Ananya+Reddy&background=059669&color=fff&size=200&bold=true',
-    tagline: 'Business Plan Writer & Financial Consultant',
-    category: 'business',
-    role: 'Freelancer',
-    bio: 'CA intern + MBA with expertise in writing investor-ready business plans, financial projections, and pitch decks. Helped 12 startups raise funding.',
-    whatsapp: '919210987654',
-    memberSince: 'Mar 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: false,
-    features: ['Business Plans', 'Financial Projections', 'Pitch Deck Design', 'Market Research', 'Startup Strategy', 'P&L Modelling', 'Investor Decks', 'CA Knowledge'],
-    stats: { ordersCompleted: 22, avgDelivery: '5.2 days', responseRate: '94%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/ananya1/600/400', caption: 'Business Plan Template' },
-      { url: 'https://picsum.photos/seed/ananya2/600/400', caption: 'Financial Projection Sheet' },
-      { url: 'https://picsum.photos/seed/ananya3/600/400', caption: 'Investor Pitch Deck' },
-    ],
-    packages: [
-      { name: 'Basic', price: 1999, deliverables: ['5-page business overview', 'Market analysis', 'Basic financials'], timeline: '3 days' },
-      { name: 'Standard', price: 4999, deliverables: ['Full business plan', '3-year projections', 'Competitor analysis', 'Strategy roadmap'], timeline: '7 days' },
-      { name: 'Premium', price: 8999, deliverables: ['Investor-ready plan', 'Pitch deck', 'Financial model', 'Executive summary', 'Revision support'], timeline: '10 days' },
-    ],
-  },
-  {
-    id: 'seller-8',
-    name: 'Dev Kumar',
-    username: '@devkumar',
-    avatar: 'https://ui-avatars.com/api/?name=Dev+Kumar&background=D97706&color=fff&size=200&bold=true',
-    tagline: 'Homemade Food & Tiffin Service Provider',
-    category: 'products',
-    role: 'Seller',
-    bio: 'Passionate home chef offering authentic homemade meals, tiffin services, and catering for small events. Pure ingredients, zero preservatives. 50+ regular customers.',
-    whatsapp: '919109876543',
-    memberSince: 'Jan 2025',
-    verified: true,
-    subscriptionActive: true,
-    featured: false,
-    features: ['Homemade Cooking', 'Tiffin Service', 'Catering', 'Diet Customization', 'Jain / Vegan Options', 'Daily Delivery', 'Zero Preservatives', 'Event Food'],
-    stats: { ordersCompleted: 91, avgDelivery: '0.5 days', responseRate: '99%' },
-    portfolio: [
-      { url: 'https://picsum.photos/seed/dev1/600/400', caption: 'Tiffin Box Meals' },
-      { url: 'https://picsum.photos/seed/dev2/600/400', caption: 'Party Snack Platters' },
-      { url: 'https://picsum.photos/seed/dev3/600/400', caption: 'Special Occasion Sweets' },
-    ],
-    packages: [
-      { name: 'Basic', price: 199, deliverables: ['Dal, rice, 2 sabzis', 'Roti (5 pcs)', 'Pickle & papad', 'Daily delivery'], timeline: '1 day' },
-      { name: 'Standard', price: 499, deliverables: ['Full thali meal', 'Dessert included', 'Weekend specials', 'Weekly plan'], timeline: '1 week' },
-      { name: 'Premium', price: 1299, deliverables: ['Monthly tiffin plan', 'Menu customization', 'Diet-specific options', 'Free delivery'], timeline: '1 month' },
-    ],
-  },
-];
-
-const SERVICES = [
-  // Creative
-  { id: 'svc-1', sellerId: 'seller-1', title: 'Professional Logo Design', category: 'creative', price: 999, deliveryTime: '3 days', thumbnail: 'https://picsum.photos/seed/svc1/400/250', description: 'Stunning logos that define your brand identity.', featured: true },
-  { id: 'svc-2', sellerId: 'seller-1', title: 'Complete Brand Identity Pack', category: 'creative', price: 2499, deliveryTime: '5 days', thumbnail: 'https://picsum.photos/seed/svc2/400/250', description: 'Logo, color palette, fonts, and brand guide.', featured: true },
-  { id: 'svc-3', sellerId: 'seller-1', title: 'Social Media Graphics Pack', category: 'creative', price: 799, deliveryTime: '2 days', thumbnail: 'https://picsum.photos/seed/svc3/400/250', description: '10 custom social media post designs.', featured: false },
-  { id: 'svc-4', sellerId: 'seller-5', title: 'Instagram Reel Edit', category: 'creative', price: 699, deliveryTime: '2 days', thumbnail: 'https://picsum.photos/seed/svc4/400/250', description: 'Cinematic reels that drive engagement.', featured: true },
-  { id: 'svc-5', sellerId: 'seller-5', title: 'YouTube Video Editing', category: 'creative', price: 1999, deliveryTime: '4 days', thumbnail: 'https://picsum.photos/seed/svc5/400/250', description: 'Full YouTube video with thumbnails & captions.', featured: false },
-  { id: 'svc-6', sellerId: 'seller-5', title: 'Brand Promo Video', category: 'creative', price: 4499, deliveryTime: '7 days', thumbnail: 'https://picsum.photos/seed/svc6/400/250', description: 'Cinematic brand story in 60–90 seconds.', featured: false },
-
-  // Student Services
-  { id: 'svc-7', sellerId: 'seller-2', title: 'Maths Tutor (1 Hour Session)', category: 'student', price: 499, deliveryTime: '1 day', thumbnail: 'https://picsum.photos/seed/svc7/400/250', description: 'IIT grad tutor. Concepts made crystal clear.', featured: true },
-  { id: 'svc-8', sellerId: 'seller-2', title: 'Physics Doubt Clearing Session', category: 'student', price: 499, deliveryTime: '1 day', thumbnail: 'https://picsum.photos/seed/svc8/400/250', description: 'Live online session for any physics topic.', featured: false },
-  { id: 'svc-9', sellerId: 'seller-2', title: 'Monthly Maths Tutoring Plan', category: 'student', price: 3999, deliveryTime: '1 month', thumbnail: 'https://picsum.photos/seed/svc9/400/250', description: 'Custom monthly plan with daily doubt support.', featured: false },
-  { id: 'svc-10', sellerId: 'seller-6', title: 'Assignment Writing (2000 words)', category: 'student', price: 1499, deliveryTime: '2 days', thumbnail: 'https://picsum.photos/seed/svc10/400/250', description: 'Well-researched, plagiarism-free assignments.', featured: true },
-  { id: 'svc-11', sellerId: 'seller-6', title: 'Research Paper Writing', category: 'student', price: 2999, deliveryTime: '5 days', thumbnail: 'https://picsum.photos/seed/svc11/400/250', description: 'Academic research papers with citations.', featured: false },
-  { id: 'svc-12', sellerId: 'seller-6', title: 'Case Study Analysis', category: 'student', price: 1299, deliveryTime: '2 days', thumbnail: 'https://picsum.photos/seed/svc12/400/250', description: 'MBA-level case study solutions.', featured: false },
-
-  // Business Growth
-  { id: 'svc-13', sellerId: 'seller-3', title: 'Instagram Marketing Strategy', category: 'business', price: 1499, deliveryTime: '3 days', thumbnail: 'https://picsum.photos/seed/svc13/400/250', description: 'Full audit + content strategy to grow faster.', featured: true },
-  { id: 'svc-14', sellerId: 'seller-3', title: 'Social Media Management (1 Month)', category: 'business', price: 3499, deliveryTime: '1 month', thumbnail: 'https://picsum.photos/seed/svc14/400/250', description: '20 posts, stories, captions, and monthly report.', featured: false },
-  { id: 'svc-15', sellerId: 'seller-3', title: 'SEO Audit & Optimization', category: 'business', price: 2499, deliveryTime: '5 days', thumbnail: 'https://picsum.photos/seed/svc15/400/250', description: 'Full website SEO audit with action plan.', featured: false },
-  { id: 'svc-16', sellerId: 'seller-7', title: 'Startup Business Plan', category: 'business', price: 4999, deliveryTime: '7 days', thumbnail: 'https://picsum.photos/seed/svc16/400/250', description: 'Investor-ready business plan with financials.', featured: true },
-  { id: 'svc-17', sellerId: 'seller-7', title: 'Investor Pitch Deck Design', category: 'business', price: 3499, deliveryTime: '5 days', thumbnail: 'https://picsum.photos/seed/svc17/400/250', description: '12-slide pitch deck that raises funding.', featured: false },
-  { id: 'svc-18', sellerId: 'seller-7', title: 'Financial Projections (3 Years)', category: 'business', price: 2499, deliveryTime: '4 days', thumbnail: 'https://picsum.photos/seed/svc18/400/250', description: 'Excel-based financial model for your business.', featured: false },
-
-  // Products
-  { id: 'svc-19', sellerId: 'seller-4', title: 'Custom Leather Wallet', category: 'products', price: 1799, deliveryTime: '7 days', thumbnail: 'https://picsum.photos/seed/svc19/400/250', description: 'Handcrafted bifold wallet with your initials.', featured: true },
-  { id: 'svc-20', sellerId: 'seller-4', title: 'Leather Business Card Holder', category: 'products', price: 799, deliveryTime: '5 days', thumbnail: 'https://picsum.photos/seed/svc20/400/250', description: 'Slim, handstitched leather card holder.', featured: false },
-  { id: 'svc-21', sellerId: 'seller-8', title: 'Daily Tiffin Service', category: 'products', price: 199, deliveryTime: '1 day', thumbnail: 'https://picsum.photos/seed/svc21/400/250', description: 'Fresh homemade meals delivered daily.', featured: true },
-  { id: 'svc-22', sellerId: 'seller-8', title: 'Party Snack Platter (10 pax)', category: 'products', price: 899, deliveryTime: '2 days', thumbnail: 'https://picsum.photos/seed/svc22/400/250', description: 'Mixed snack platter for 10 people.', featured: false },
-];
-
-// ——— Physical Products (for Products Marketplace page) ———
-const PRODUCT_SUBCATEGORIES = [
-  { id: 'all',        name: 'All Products',    icon: '🛍️' },
-  { id: 'handcraft',  name: 'Handcrafted',     icon: '🪡' },
-  { id: 'food',       name: 'Food & Drinks',   icon: '🍱' },
-  { id: 'clothing',   name: 'Clothing & Acc.', icon: '👗' },
-  { id: 'stationery', name: 'Art & Stationery',icon: '🎨' },
-  { id: 'plants',     name: 'Plants & Decor',  icon: '🌿' },
-];
-
-const PRODUCTS = [
-  // ——— Handcrafted ———
-  {
-    id: 'prod-1',
-    sellerId: 'seller-4',
-    title: 'Handstitched Leather Bifold Wallet',
-    subtitle: 'Personalized with your initials',
-    subCategory: 'handcraft',
-    price: 1799,
-    originalPrice: 2199,
-    thumbnail: 'https://picsum.photos/seed/lwallet/400/400',
-    images: ['https://picsum.photos/seed/lwallet/600/500', 'https://picsum.photos/seed/lwallet2/600/500', 'https://picsum.photos/seed/lwallet3/600/500'],
-    description: 'Premium vegetable-tanned leather, hand-stitched with waxed linen thread. Holds 8 cards + cash. Personalised with your initials — makes the perfect gift.',
-    specs: ['Full-grain leather', '8 card slots', 'Cash compartment', 'Free initials engraving', 'Gift box included'],
-    deliveryTime: '7 days',
-    stock: 12,
-    rating: 4.9,
-    reviews: 34,
-    featured: true,
-    badge: 'Bestseller',
-  },
-  {
-    id: 'prod-2',
-    sellerId: 'seller-4',
-    title: 'Slim Leather Card Holder',
-    subtitle: 'Minimalist carry for essentials',
-    subCategory: 'handcraft',
-    price: 799,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/lcard/400/400',
-    images: ['https://picsum.photos/seed/lcard/600/500', 'https://picsum.photos/seed/lcard2/600/500'],
-    description: 'Ultra-slim card holder for the minimalist. Fits 4–6 cards snugly. Hand-stitched with genuine leather in 4 colour options.',
-    specs: ['Genuine leather', '4–6 card capacity', 'Ultra-slim profile', '4 colour choices'],
-    deliveryTime: '5 days',
-    stock: 20,
-    rating: 4.7,
-    reviews: 18,
-    featured: false,
-    badge: null,
-  },
-  {
-    id: 'prod-3',
-    sellerId: 'seller-4',
-    title: 'Custom Leather Journal Cover',
-    subtitle: 'A5 / A6 size, any notebook',
-    subCategory: 'handcraft',
-    price: 1299,
-    originalPrice: 1599,
-    thumbnail: 'https://picsum.photos/seed/ljournal/400/400',
-    images: ['https://picsum.photos/seed/ljournal/600/500', 'https://picsum.photos/seed/ljournal2/600/500'],
-    description: 'Wrap any A5 or A6 notebook in gorgeous hand-tooled leather. Includes a pen loop and bookmark ribbon. Personalization available.',
-    specs: ['Fits A5 & A6 notebooks', 'Pen loop', 'Bookmark ribbon', 'Custom name/quote stamping'],
-    deliveryTime: '7 days',
-    stock: 8,
-    rating: 4.8,
-    reviews: 12,
-    featured: false,
-    badge: 'New',
-  },
-  // ——— Food ———
-  {
-    id: 'prod-4',
-    sellerId: 'seller-8',
-    title: 'Daily Tiffin — Homemade Thali',
-    subtitle: 'Dal, 2 sabzi, roti, rice & dessert',
-    subCategory: 'food',
-    price: 199,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/tiffin1/400/400',
-    images: ['https://picsum.photos/seed/tiffin1/600/500', 'https://picsum.photos/seed/tiffin2/600/500'],
-    description: 'Pure homemade food — dal, 2 seasonal sabzis, 5 fresh rotis, steamed rice, pickle and papad. Delivered before 1 pm. Zero oil, zero preservatives.',
-    specs: ['Dal + 2 sabzi', '5 freshly made rotis', 'Steamed rice', 'Pickle & papad', 'Can subscribe weekly'],
-    deliveryTime: 'Same Day',
-    stock: 50,
-    rating: 4.9,
-    reviews: 87,
-    featured: true,
-    badge: '🔥 Most Ordered',
-  },
-  {
-    id: 'prod-5',
-    sellerId: 'seller-8',
-    title: 'Party Snack Platter (10 pax)',
-    subtitle: 'Samosas, sandwiches, dhokla & more',
-    subCategory: 'food',
-    price: 899,
-    originalPrice: 1100,
-    thumbnail: 'https://picsum.photos/seed/snack1/400/400',
-    images: ['https://picsum.photos/seed/snack1/600/500', 'https://picsum.photos/seed/snack2/600/500'],
-    description: 'Mixed party platter serving 10 people. Includes mini samosas (10), veg sandwiches (10), dhokla, and assorted namkeen. Perfect for birthdays & small celebrations.',
-    specs: ['Serves 10 people', '10 mini samosas', '10 veg sandwiches', 'Dhokla + namkeen', 'Order 2 days ahead'],
-    deliveryTime: '2 days',
-    stock: 15,
-    rating: 4.8,
-    reviews: 23,
-    featured: false,
-    badge: null,
-  },
-  {
-    id: 'prod-6',
-    sellerId: 'seller-8',
-    title: 'Homemade Sweet Gift Box',
-    subtitle: 'Laddoos, barfi & halwa — 500g',
-    subCategory: 'food',
-    price: 449,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/sweet1/400/400',
-    images: ['https://picsum.photos/seed/sweet1/600/500', 'https://picsum.photos/seed/sweet2/600/500'],
-    description: 'A lovingly packed 500g assorted mithai box. Contains besan laddoos, kaju barfi, and gajar halwa. Pure ghee, no artificial colours. Festival & gifting special.',
-    specs: ['500g assorted mithai', 'Besan laddoo + kaju barfi', 'Gajar halwa', 'Pure ghee, no colours', 'Festive gift box'],
-    deliveryTime: '2 days',
-    stock: 30,
-    rating: 4.7,
-    reviews: 41,
-    featured: true,
-    badge: 'Festival Special',
-  },
-  // ——— Clothing & Accessories ———
-  {
-    id: 'prod-7',
-    sellerId: 'seller-4',
-    title: 'Hand-tooled Leather Belt',
-    subtitle: 'Classic fit, any buckle style',
-    subCategory: 'clothing',
-    price: 1199,
-    originalPrice: 1499,
-    thumbnail: 'https://picsum.photos/seed/belt1/400/400',
-    images: ['https://picsum.photos/seed/belt1/600/500', 'https://picsum.photos/seed/belt2/600/500'],
-    description: 'Durable full-grain leather belt, hand-finished and vegetable tanned. Custom lengths available. Brass or silver buckle options. Lasts 10+ years.',
-    specs: ['Full-grain leather', 'Custom length', 'Brass or silver buckle', 'Multiple width options', '30-day fit guarantee'],
-    deliveryTime: '7 days',
-    stock: 10,
-    rating: 4.8,
-    reviews: 15,
-    featured: false,
-    badge: null,
-  },
-  {
-    id: 'prod-8',
-    sellerId: 'seller-4',
-    title: 'Custom Leather Keychain',
-    subtitle: 'Name / initial embossed',
-    subCategory: 'clothing',
-    price: 349,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/keychain1/400/400',
-    images: ['https://picsum.photos/seed/keychain1/600/500'],
-    description: 'Handcrafted leather keychain with your name or initials embossed. Great as a gift or personal accessory. Choose from 5 leather colours.',
-    specs: ['Name / initial embossed', '5 leather colour options', 'Steel keyring', 'Gift-packaged'],
-    deliveryTime: '4 days',
-    stock: 40,
-    rating: 4.6,
-    reviews: 29,
-    featured: false,
-    badge: 'Gifting',
-  },
-  // ——— Art & Stationery ———
-  {
-    id: 'prod-9',
-    sellerId: 'seller-1',
-    title: 'Custom Watercolour Portrait',
-    subtitle: 'From your photo — A4 size',
-    subCategory: 'stationery',
-    price: 1499,
-    originalPrice: 1999,
-    thumbnail: 'https://picsum.photos/seed/portrait1/400/400',
-    images: ['https://picsum.photos/seed/portrait1/600/500', 'https://picsum.photos/seed/portrait2/600/500'],
-    description: "Send me your favourite photo and I'll hand-paint a stunning watercolour portrait. A4 size on 300gsm cold press paper. Perfect wedding anniversary, birthday or pet portrait gift.",
-    specs: ['A4 size (21×29.7 cm)', '300gsm cold press paper', 'Reference photo required', 'Ships rolled in tube', '1 free revision'],
-    deliveryTime: '10 days',
-    stock: 5,
-    rating: 5.0,
-    reviews: 9,
-    featured: true,
-    badge: '⭐ Premium',
-  },
-  {
-    id: 'prod-10',
-    sellerId: 'seller-1',
-    title: 'Personalised Greeting Card Set (6)',
-    subtitle: 'Hand-lettered, premium cardstock',
-    subCategory: 'stationery',
-    price: 399,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/card1/400/400',
-    images: ['https://picsum.photos/seed/card1/600/500', 'https://picsum.photos/seed/card2/600/500'],
-    description: 'A set of 6 beautifully hand-lettered greeting cards for birthdays, milestones, or just-because. Each comes with an envelope. Customise the text inside.',
-    specs: ['Set of 6 cards', '300gsm premium cardstock', 'Envelopes included', 'Custom message inside', 'Blank space or pre-printed'],
-    deliveryTime: '5 days',
-    stock: 25,
-    rating: 4.8,
-    reviews: 19,
-    featured: false,
-    badge: null,
-  },
-  {
-    id: 'prod-11',
-    sellerId: 'seller-1',
-    title: 'Digital Art Print (Framed)',
-    subtitle: 'Home/office décor, A3 + frame',
-    subCategory: 'stationery',
-    price: 1299,
-    originalPrice: 1599,
-    thumbnail: 'https://picsum.photos/seed/artprint1/400/400',
-    images: ['https://picsum.photos/seed/artprint1/600/500', 'https://picsum.photos/seed/artprint2/600/500'],
-    description: 'Elegantly framed A3 digital art print. Choose from a curated collection of minimal abstract art, botanicals, or city scapes. Printed on matte archival paper with a slim black wooden frame.',
-    specs: ['A3 size (29.7×42 cm)', 'Archival matte paper', 'Slim wooden frame', '10 design choices', 'Ready to hang'],
-    deliveryTime: '6 days',
-    stock: 18,
-    rating: 4.7,
-    reviews: 11,
-    featured: false,
-    badge: 'Décor',
-  },
-  // ——— Plants & Decor ———
-  {
-    id: 'prod-12',
-    sellerId: 'seller-3',
-    title: 'Succulent Trio Gift Set',
-    subtitle: '3 succulents + ceramic pots',
-    subCategory: 'plants',
-    price: 549,
-    originalPrice: 699,
-    thumbnail: 'https://picsum.photos/seed/succulent1/400/400',
-    images: ['https://picsum.photos/seed/succulent1/600/500', 'https://picsum.photos/seed/succulent2/600/500'],
-    description: 'Three hand-picked healthy succulents in matching mini ceramic pots with drainage holes. Low-maintenance, perfect for desks and windowsills. Gift-wrapped with care card.',
-    specs: ['3 healthy succulents', 'Mini ceramic pots', 'Drainage holes', 'Soil & pebble topping', 'Care instruction card'],
-    deliveryTime: '3 days',
-    stock: 22,
-    rating: 4.9,
-    reviews: 37,
-    featured: true,
-    badge: '🌿 Fan Favourite',
-  },
-  {
-    id: 'prod-13',
-    sellerId: 'seller-3',
-    title: 'Air-Purifying Plant Bundle',
-    subtitle: 'Money plant, peace lily & snake plant',
-    subCategory: 'plants',
-    price: 899,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/plant1/400/400',
-    images: ['https://picsum.photos/seed/plant1/600/500', 'https://picsum.photos/seed/plant2/600/500'],
-    description: 'Three top air-purifying indoor plants — money plant, peace lily and snake plant — in grow bags. NASA-listed air purifiers. Great for bedrooms and work-from-home setups.',
-    specs: ['Money plant + peace lily + snake plant', 'Grow bags included', 'Ready-to-pot', 'Beginner-friendly', 'Delivery wrapped safely'],
-    deliveryTime: '2 days',
-    stock: 15,
-    rating: 4.8,
-    reviews: 28,
-    featured: false,
-    badge: null,
-  },
-  {
-    id: 'prod-14',
-    sellerId: 'seller-3',
-    title: 'Handmade Macramé Wall Hanging',
-    subtitle: '60 cm wide, boho aesthetic',
-    subCategory: 'plants',
-    price: 799,
-    originalPrice: 999,
-    thumbnail: 'https://picsum.photos/seed/macrame1/400/400',
-    images: ['https://picsum.photos/seed/macrame1/600/500', 'https://picsum.photos/seed/macrame2/600/500'],
-    description: 'Beautiful handmade macramé wall hanging in natural cotton rope. Adds a boho-chic touch to any room. Driftwood bar and hanging cord included.',
-    specs: ['60 cm width', 'Natural cotton rope', 'Driftwood bar included', 'Hanging cord', 'Boho / Scandinavian style'],
-    deliveryTime: '5 days',
-    stock: 7,
-    rating: 4.9,
-    reviews: 13,
-    featured: false,
-    badge: 'Handmade',
-  },
-  {
-    id: 'prod-15',
-    sellerId: 'seller-3',
-    title: 'Scented Soy Candle Set (3)',
-    subtitle: 'Vanilla, lavender & jasmine',
-    subCategory: 'plants',
-    price: 649,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/candle1/400/400',
-    images: ['https://picsum.photos/seed/candle1/600/500', 'https://picsum.photos/seed/candle2/600/500'],
-    description: '3 hand-poured 100% natural soy wax candles with premium fragrance oils. 40+ hour burn time each. Comes in reusable glass jars. Perfect self-care or gifting set.',
-    specs: ['100% natural soy wax', '3 scents: vanilla, lavender, jasmine', '40+ hour burn time', 'Reusable glass jar', 'Cotton wick'],
-    deliveryTime: '4 days',
-    stock: 30,
-    rating: 4.8,
-    reviews: 22,
-    featured: true,
-    badge: '✨ Self-Care',
-  },
-  {
-    id: 'prod-16',
-    sellerId: 'seller-8',
-    title: 'Weekly Meal Prep Box (5 days)',
-    subtitle: 'Lunch + dinner for one person',
-    subCategory: 'food',
-    price: 999,
-    originalPrice: 1299,
-    thumbnail: 'https://picsum.photos/seed/mealprep/400/400',
-    images: ['https://picsum.photos/seed/mealprep/600/500', 'https://picsum.photos/seed/mealprep2/600/500'],
-    description: 'Five days of healthy homemade lunch and dinner for one person. Menu rotates daily — never repeat. Calorie-counted, diet-customisable (Jain/vegan available).',
-    specs: ['5 days coverage', 'Lunch + Dinner daily', 'Rotating menu', 'Jain / Vegan option', 'Free delivery included'],
-    deliveryTime: '1 day',
-    stock: 10,
-    rating: 4.9,
-    reviews: 44,
-    featured: false,
-    badge: '💪 Healthy',
-  },
-  {
-    id: 'prod-17',
-    sellerId: 'seller-4',
-    title: 'Leather Laptop Sleeve (13–14 inch)',
-    subtitle: 'Hand-stitched, snug fit',
-    subCategory: 'handcraft',
-    price: 2499,
-    originalPrice: 2999,
-    thumbnail: 'https://picsum.photos/seed/sleeve1/400/400',
-    images: ['https://picsum.photos/seed/sleeve1/600/500', 'https://picsum.photos/seed/sleeve2/600/500'],
-    description: 'Premium hand-stitched leather laptop sleeve for 13–14 inch laptops. Padded with soft microfibre lining. Side pocket for charger. Available in 3 leather tones.',
-    specs: ['Fits 13–14 inch laptops', 'Hand-stitched genuine leather', 'Padded microfibre lining', 'Side pocket for accessories', '3 leather colour options'],
-    deliveryTime: '10 days',
-    stock: 6,
-    rating: 4.9,
-    reviews: 7,
-    featured: true,
-    badge: '🔥 Limited Stock',
-  },
-  {
-    id: 'prod-18',
-    sellerId: 'seller-1',
-    title: 'Custom Name / Quote Poster',
-    subtitle: 'Minimalist typographic art, A3',
-    subCategory: 'stationery',
-    price: 599,
-    originalPrice: null,
-    thumbnail: 'https://picsum.photos/seed/poster1/400/400',
-    images: ['https://picsum.photos/seed/poster1/600/500', 'https://picsum.photos/seed/poster2/600/500'],
-    description: 'Your name, favourite quote, or date beautifully typeset in a minimal design. Printed on 250gsm matte paper. Unframed — A3 size. Ships anywhere.',
-    specs: ['A3 size (29.7×42 cm)', '250gsm matte paper', 'Custom text / quote', '5 colour themes', 'Shipped rolled in tube'],
-    deliveryTime: '4 days',
-    stock: 999,
-    rating: 4.7,
-    reviews: 55,
-    featured: false,
-    badge: null,
-  },
-];
-
-const ORDERS = [
-  {
-    id: 'ORD-2025-001',
-    serviceId: 'svc-1',
-    serviceName: 'Professional Logo Design',
-    sellerId: 'seller-1',
-    sellerName: 'Priya Sharma',
-    customerName: 'Rahul Gupta',
-    price: 999,
-    status: 'delivered',
-    orderDate: '2025-04-01',
-    deliveryDate: '2025-04-04',
-    commission: 150,
-    type: 'direct',
-  },
-  {
-    id: 'ORD-2025-002',
-    serviceId: 'svc-7',
-    serviceName: 'Maths Tutor (1 Hour Session)',
-    sellerId: 'seller-2',
-    sellerName: 'Arjun Mehta',
-    customerName: 'Pooja Iyer',
-    price: 499,
-    status: 'in-progress',
-    orderDate: '2025-04-10',
-    deliveryDate: '2025-04-12',
-    commission: 75,
-    type: 'direct',
-  },
-  {
-    id: 'ORD-2025-003',
-    serviceId: 'svc-13',
-    serviceName: 'Instagram Marketing Strategy',
-    sellerId: 'seller-3',
-    sellerName: 'Kavya Nair',
-    customerName: 'Amit Shah',
-    price: 1499,
-    status: 'pending',
-    orderDate: '2025-04-11',
-    deliveryDate: '2025-04-14',
-    commission: 225,
-    type: 'direct',
-  },
-  {
-    id: 'ORD-2025-004',
-    serviceId: null,
-    serviceName: 'Custom Wedding Video Editing',
-    sellerId: null,
-    sellerName: 'Unassigned',
-    customerName: 'Sita Rao',
-    price: 3500,
-    status: 'pending',
-    orderDate: '2025-04-12',
-    deliveryDate: null,
-    commission: 525,
-    type: 'on-demand',
-    requestDetails: 'Need cinematic wedding video edit, 5-min highlight reel, under ₹4000',
-  },
-  {
-    id: 'ORD-2025-005',
-    serviceId: 'svc-19',
-    serviceName: 'Custom Leather Wallet',
-    sellerId: 'seller-4',
-    sellerName: 'Rohan Das',
-    customerName: 'Vivek Nambiar',
-    price: 1799,
-    status: 'in-progress',
-    orderDate: '2025-04-08',
-    deliveryDate: '2025-04-15',
-    commission: 270,
-    type: 'direct',
-  },
-];
-
-const SELLER_APPLICATIONS = [
-  {
-    id: 'app-1',
-    name: 'Tanvi Kulkarni',
-    email: 'tanvi.k@gmail.com',
-    phone: '9811223344',
-    whatsapp: '9811223344',
-    category: 'creative',
-    bio: 'Watercolor artist with 3 years experience. Specializing in portraits and custom illustrations.',
-    portfolio: 'https://instagram.com/tanvi.art',
-    sampleWork: 'Custom pet portraits, wedding illustrations, logo illustrations',
-    suggestedPricing: '₹800–₹2500',
-    appliedDate: '2025-04-10',
-    status: 'pending',
-  },
-  {
-    id: 'app-2',
-    name: 'Manish Verma',
-    email: 'manish.verma@gmail.com',
-    phone: '9922334455',
-    whatsapp: '9922334455',
-    category: 'business',
-    bio: 'Digital marketing professional with 4 years at a startup. Expert in Facebook Ads and email marketing.',
-    portfolio: 'https://linkedin.com/in/manishverma',
-    sampleWork: 'Ad campaigns, email sequences, landing page copy',
-    suggestedPricing: '₹1500–₹5000',
-    appliedDate: '2025-04-11',
-    status: 'pending',
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    id: 1,
-    name: 'Rahul Gupta',
-    role: 'Startup Founder',
-    avatar: 'https://ui-avatars.com/api/?name=Rahul+Gupta&background=7C3AED&color=fff&size=100',
-    text: 'Got my entire brand identity done in 5 days! Priya is exceptional — delivered exactly what I envisioned. CreatorHub is a game-changer for local talent.',
-    rating: 5,
-    service: 'Brand Identity Pack',
-  },
-  {
-    id: 2,
-    name: 'Pooja Iyer',
-    role: 'Class 12 Student',
-    avatar: 'https://ui-avatars.com/api/?name=Pooja+Iyer&background=2563EB&color=fff&size=100',
-    text: 'Arjun\'s tutoring sessions literally saved my board exams. He explains things so clearly and is always available for doubts. Scored 92 in Maths!',
-    rating: 5,
-    service: 'Monthly Maths Tutoring',
-  },
-  {
-    id: 3,
-    name: 'Amit Shah',
-    role: 'Restaurant Owner',
-    avatar: 'https://ui-avatars.com/api/?name=Amit+Shah&background=059669&color=fff&size=100',
-    text: 'Kavya\'s Instagram strategy tripled our followers in 3 weeks. The content calendar and caption writing is next-level. Highly recommend for any local business.',
-    rating: 5,
-    service: 'Instagram Marketing Strategy',
-  },
-];
-
-// Export all data
-if (typeof module !== 'undefined') {
-  module.exports = { CATEGORIES, SELLERS, SERVICES, PRODUCTS, PRODUCT_SUBCATEGORIES, ORDERS, SELLER_APPLICATIONS, TESTIMONIALS };
+/**
+ * Fetch all verified sellers from the database
+ */
+async function getSellers() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('sellers')
+      .select('*')
+      .eq('verified', true)
+      .order('featured', { ascending: false });
+      
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching sellers:", error);
+    return [];
+  }
 }
 
+/**
+ * Fetch a specific seller by their ID
+ */
+async function getSellerById(id) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('sellers')
+      .select('*')
+      .eq('id', id)
+      .single();
+      
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error(`Error fetching seller ${id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Fetch services, optionally filtered by a specific seller
+ */
+async function getServices(sellerId = null) {
+  try {
+    let query = supabaseClient.from('services').select('*');
+    if (sellerId) {
+      query = query.eq('seller_id', sellerId);
+    }
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch physical products, optionally filtered by a specific seller
+ */
+async function getProducts() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('products')
+      .select('*');
+      
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+/**
+ * Fetch testimonials
+ */
+async function getTestimonials() {
+  if (!supabaseClient) return [];
+  try {
+    const { data, error } = await supabaseClient
+      .from('testimonials')
+      .select('*')
+      .order('rating', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    return [];
+  }
+}

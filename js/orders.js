@@ -5,7 +5,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initMobileNav();
-  renderAllOrders();
   initTrackButton();
 });
 
@@ -37,39 +36,47 @@ function trackDemo(ref) {
   searchOrder();
 }
 
-function searchOrder() {
+async function searchOrder() {
   const input = document.getElementById('orderRefInput');
-  const ref   = input?.value.trim().toUpperCase();
+  const ref   = input?.value.trim();
   
   if (!ref) {
     input?.focus();
     return;
   }
 
-  const order = ORDERS.find(o => o.id === ref);
-
   const resultEl   = document.getElementById('orderResult');
   const notFoundEl = document.getElementById('orderNotFound');
 
-  if (!order) {
-    if (resultEl) resultEl.style.display = 'none';
-    if (notFoundEl) notFoundEl.style.display = 'block';
-    notFoundEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
+  try {
+    const { data: order, error } = await supabaseClient
+      .from('orders')
+      .select('*')
+      .eq('id', ref)
+      .single();
+
+    if (error || !order) {
+      if (resultEl) resultEl.style.display = 'none';
+      if (notFoundEl) notFoundEl.style.display = 'block';
+      notFoundEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (notFoundEl) notFoundEl.style.display = 'none';
+    if (resultEl) resultEl.style.display = 'block';
+
+    await renderOrderCard(order);
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    console.error('Error tracking order:', err);
   }
-
-  if (notFoundEl) notFoundEl.style.display = 'none';
-  if (resultEl) resultEl.style.display = 'block';
-
-  renderOrderCard(order);
-  resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function renderOrderCard(order) {
+async function renderOrderCard(order) {
   const card = document.getElementById('orderCard');
   if (!card) return;
 
-  const seller = SELLERS.find(s => s.id === order.sellerId);
+  const seller = await getSellerById(order.seller_id);
   const statusSteps = ['pending', 'in-progress', 'delivered'];
   const currentStep = statusSteps.indexOf(order.status);
 
@@ -117,19 +124,19 @@ function renderOrderCard(order) {
     <div class="order-details-grid">
       <div class="order-detail-item">
         <span class="order-detail-label">Seller</span>
-        <span class="order-detail-value">${order.sellerName}</span>
+        <span class="order-detail-value">${seller ? seller.name : 'CreatorHub Seller'}</span>
       </div>
       <div class="order-detail-item">
         <span class="order-detail-label">Customer</span>
-        <span class="order-detail-value">${order.customerName}</span>
+        <span class="order-detail-value">${order.customer_name || 'Customer'}</span>
       </div>
       <div class="order-detail-item">
         <span class="order-detail-label">Order Date</span>
-        <span class="order-detail-value">${formatDate(order.orderDate)}</span>
+        <span class="order-detail-value">${formatDate(order.order_date)}</span>
       </div>
       <div class="order-detail-item">
         <span class="order-detail-label">Expected Delivery</span>
-        <span class="order-detail-value">${order.deliveryDate ? formatDate(order.deliveryDate) : 'TBD by Admin'}</span>
+        <span class="order-detail-value">${order.delivery_date ? formatDate(order.delivery_date) : 'TBD by Admin'}</span>
       </div>
       <div class="order-detail-item">
         <span class="order-detail-label">Order Type</span>
@@ -188,17 +195,7 @@ function formatDate(dateStr) {
 
 function renderAllOrders() {
   const list = document.getElementById('ordersList');
-  if (!list) return;
-
-  list.innerHTML = ORDERS.map(order => `
-    <div class="order-list-item" onclick="trackDemo('${order.id}')" id="order-item-${order.id}">
-      <div>
-        <div class="order-list-ref">${order.id}</div>
-        <div class="order-list-name">${order.serviceName}</div>
-        <div class="order-list-seller">Seller: ${order.sellerName} · ${formatDate(order.orderDate)}</div>
-      </div>
-      <div class="order-list-price">₹${order.price.toLocaleString('en-IN')}</div>
-      <div class="${getStatusClass(order.status)}">${getStatusLabel(order.status)}</div>
-    </div>
-  `).join('');
+  if (list) {
+    list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Enter your tracking ID above to view your order status.</p>';
+  }
 }

@@ -3,7 +3,7 @@
 // Handles: caching, offline fallback, push notifications
 // ============================================================
 
-const CACHE_NAME = 'creatorhub-v1.1';
+const CACHE_NAME = 'creatorhub-v1.2';
 const OFFLINE_URL = '/404.html';
 
 const STATIC_ASSETS = [

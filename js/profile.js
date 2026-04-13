@@ -1,21 +1,22 @@
-document.addEventListener('DOMContentLoaded', () => {
-  triggerAuthRender();
-  loadProfile();
+document.addEventListener('DOMContentLoaded', async () => {
+  if(typeof triggerAuthRender === 'function') triggerAuthRender();
+  await loadProfile();
 });
 
-function loadProfile() {
+async function loadProfile() {
   try {
     const params = new URLSearchParams(window.location.search);
-    const sellerId = params.get('id') || 'seller-1'; // Default for demo
+    const sellerId = params.get('id'); // Default for demo
     
-    if (typeof SELLERS === 'undefined') {
-      document.getElementById('profileHeaderContent').innerHTML = `<h2 style="color:red;">Error: Database (SELLERS) not loaded!</h2>`;
+    const header = document.getElementById('profileHeaderContent');
+    if (!sellerId) {
+      if (header) header.innerHTML = `<h2 style="color:red;">Error: No ID specified!</h2>`;
       return;
     }
 
-    const seller = SELLERS.find(s => s.id === sellerId);
+    const seller = await getSellerById(sellerId);
     if(!seller) {
-      document.getElementById('profileHeaderContent').innerHTML = `<h2>Seller not found</h2>`;
+      if (header) header.innerHTML = `<h2>Seller not found</h2>`;
       return;
     }
 
@@ -68,10 +69,12 @@ function loadProfile() {
 
   // Services/Packages Inject
   const servicesContainer = document.getElementById('tab-services');
-  const sellerServices = SERVICES.filter(s => s.sellerId === seller.id);
+  const sellerServices = await getServices(seller.id);
+  const sellerPackages = seller.packages || [];
   
   let packagesHTML = `<h3 style="font-size:1.5rem; margin-bottom:20px;">Packages Built for You</h3><div class="packages-grid">`;
-  seller.packages.forEach(pkg => {
+  if (sellerPackages.length === 0) packagesHTML += '<p>No packages defined.</p>';
+  sellerPackages.forEach(pkg => {
     packagesHTML += `
       <div class="glass-card" style="padding:24px; display:flex; flex-direction:column;">
         <h4 style="font-size:1.2rem; color:var(--purple-400); margin-bottom:8px;">${pkg.name}</h4>
@@ -108,7 +111,8 @@ function loadProfile() {
   // Portfolio Inject
   const portfolioContainer = document.getElementById('tab-portfolio');
   let portHTML = `<div class="portfolio-grid">`;
-  seller.portfolio.forEach(item => {
+  const sellerPortfolio = seller.portfolio || [];
+  sellerPortfolio.forEach(item => {
     portHTML += `
       <div class="portfolio-item glass-card" style="padding:12px;">
         <img src="${item.url}" alt="${item.caption}" />
@@ -199,7 +203,7 @@ function submitNewService(e) {
 // —— Edit Profile Modal Logic ——
 let selectedAvatarFile = null;
 
-function openEditProfileModal() {
+async function openEditProfileModal() {
   const sellerId = new URLSearchParams(window.location.search).get('id') || 'seller-1';
   // Attempt to load current data
   const userCache = localStorage.getItem('creatorHubUser');
@@ -217,9 +221,9 @@ function openEditProfileModal() {
   }
   
   if (!avatar) {
-    const s = window.SELLERS ? window.SELLERS.find(s=>s.id === sellerId) : null;
+    const s = await getSellerById(sellerId);
     if (s) {
-      avatar = s.avatar;
+      avatar = s.avatar_url || s.avatar;
       tagline = tagline || s.tagline;
       bio = bio || s.bio;
       currentRole = currentRole || s.role;

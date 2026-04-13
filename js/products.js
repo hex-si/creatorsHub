@@ -13,20 +13,37 @@ let activeDelivery = 'all';
 let activeSort = 'default';
 let searchQuery = '';
 let isListLayout = false;
+let allProducts = [];
+let allSellers = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+const PRODUCT_SUBCATEGORIES = [
+  { id: 'all', name: 'All Products', icon: '🌐' },
+  { id: 'food', name: 'Food & Home Cooks', icon: '🥘' },
+  { id: 'handicraft', name: 'Handicrafts', icon: '🧺' },
+  { id: 'clothing', name: 'Local Apparel', icon: '👗' },
+  { id: 'art', name: 'Art Prints', icon: '🖼️' }
+];
+
+document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initMobileNav();
-  renderCategoryPills();
-  renderSellerFilters();
-  renderFeaturedBanner();
-  renderProducts();
   initSearch();
   initFilters();
   initCart();
   initProductModal();
   updateCartUI();
-  if (typeof triggerAuthRender === 'function') triggerAuthRender();
+  
+  const grid = document.getElementById('productsGrid');
+  if (grid) grid.innerHTML = '<p style="padding:40px;text-align:center;color:var(--text-muted)">Loading products...</p>';
+
+  const [prods, slrs] = await Promise.all([getProducts(), getSellers()]);
+  allProducts = prods;
+  allSellers = slrs;
+
+  renderCategoryPills();
+  renderSellerFilters();
+  renderFeaturedBanner();
+  renderProducts();  
 });
 
 // ——— Navbar ———
@@ -74,9 +91,9 @@ function renderFeaturedBanner() {
   const scroll = document.getElementById('featuredScroll');
   if (!scroll) return;
 
-  const featured = PRODUCTS.filter(p => p.featured);
+  const featured = allProducts.filter(p => p.featured);
   scroll.innerHTML = featured.map(p => {
-    const seller = SELLERS.find(s => s.id === p.sellerId);
+    const seller = allSellers.find(s => s.id === p.seller_id);
     return `
       <div class="featured-product-chip" onclick="openProductModal('${p.id}')">
         <img src="${p.thumbnail}" alt="${p.title}" class="featured-chip-img" loading="lazy" />
@@ -95,8 +112,8 @@ function renderSellerFilters() {
   if (!container) return;
 
   // Sellers who have products
-  const productSellerIds = [...new Set(PRODUCTS.map(p => p.sellerId))];
-  const sellers = SELLERS.filter(s => productSellerIds.includes(s.id));
+  const productSellerIds = [...new Set(allProducts.map(p => p.seller_id))];
+  const sellers = allSellers.filter(s => productSellerIds.includes(s.id));
 
   container.innerHTML = sellers.map(s => `
     <label class="seller-filter-item">
@@ -233,16 +250,17 @@ function initSearch() {
 
 // ——— Render Products ———
 function renderProducts() {
-  let filtered = [...PRODUCTS];
+  let filtered = [...allProducts];
 
   // Category
   if (activeCategory !== 'all') {
-    filtered = filtered.filter(p => p.subCategory === activeCategory);
+    // In schema the field is sub_category
+    filtered = filtered.filter(p => p.sub_category === activeCategory);
   }
 
   // Seller
   if (activeSellers.length > 0) {
-    filtered = filtered.filter(p => activeSellers.includes(p.sellerId));
+    filtered = filtered.filter(p => activeSellers.includes(p.seller_id));
   }
 
   // Price
@@ -260,12 +278,12 @@ function renderProducts() {
   // Search
   if (searchQuery) {
     filtered = filtered.filter(p => {
-      const seller = SELLERS.find(s => s.id === p.sellerId);
+      const seller = allSellers.find(s => s.id === p.seller_id);
       return (
         p.title.toLowerCase().includes(searchQuery) ||
-        p.subtitle?.toLowerCase().includes(searchQuery) ||
-        p.description?.toLowerCase().includes(searchQuery) ||
-        seller?.name.toLowerCase().includes(searchQuery)
+        (p.subtitle || '').toLowerCase().includes(searchQuery) ||
+        (p.description || '').toLowerCase().includes(searchQuery) ||
+        (seller?.name || '').toLowerCase().includes(searchQuery)
       );
     });
   }
@@ -277,7 +295,8 @@ function renderProducts() {
   if (activeSort === 'delivery')   filtered.sort((a, b) => extractDays(a.deliveryTime) - extractDays(b.deliveryTime));
 
   // Update stat
-  document.getElementById('stat-products').textContent = PRODUCTS.length;
+  const statProducts = document.getElementById('stat-products');
+  if (statProducts) statProducts.textContent = allProducts.length;
 
   // Results count
   const countEl = document.getElementById('resultsCount');
@@ -330,7 +349,7 @@ function extractDays(t) {
 
 // ——— Build Product Card ———
 function buildProductCard(p) {
-  const seller = SELLERS.find(s => s.id === p.sellerId);
+  const seller = allSellers.find(s => s.id === p.seller_id);
   const discount = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : 0;
   const isWished = wishlist.includes(p.id);
   const stockText = p.stock <= 5 ? `Only ${p.stock} left` : 'In stock';
@@ -441,7 +460,7 @@ function initCart() {
 }
 
 window.addToCart = (productId) => {
-  const product = PRODUCTS.find(p => p.id === productId);
+  const product = allProducts.find(p => p.id === productId);
   if (!product) return;
 
   const existing = cart.find(i => i.id === productId);
@@ -483,9 +502,9 @@ function renderCartItems() {
   let total = 0;
 
   container.innerHTML = cart.map(item => {
-    const p = PRODUCTS.find(pr => pr.id === item.id);
+    const p = allProducts.find(pr => pr.id === item.id);
     if (!p) return '';
-    const seller = SELLERS.find(s => s.id === p.sellerId);
+    const seller = allSellers.find(s => s.id === p.seller_id);
     const lineTotal = p.price * item.qty;
     total += lineTotal;
     return `
@@ -514,7 +533,7 @@ function renderCartItems() {
 
 window.changeQty = (productId, delta) => {
   const item = cart.find(i => i.id === productId);
-  const product = PRODUCTS.find(p => p.id === productId);
+  const product = allProducts.find(p => p.id === productId);
   if (!item || !product) return;
 
   item.qty = Math.max(1, Math.min(item.qty + delta, product.stock));
@@ -547,23 +566,23 @@ function checkoutViaWhatsApp() {
   if (cart.length === 0) return;
 
   let lines = cart.map(item => {
-    const p = PRODUCTS.find(pr => pr.id === item.id);
+    const p = allProducts.find(pr => pr.id === item.id);
     if (!p) return '';
     return `• ${p.title} ×${item.qty} = ₹${(p.price * item.qty).toLocaleString('en-IN')}`;
   }).filter(Boolean);
 
   const total = cart.reduce((sum, item) => {
-    const p = PRODUCTS.find(pr => pr.id === item.id);
+    const p = allProducts.find(pr => pr.id === item.id);
     return sum + (p ? p.price * item.qty : 0);
   }, 0);
 
   const message = `Hi! I'd like to place an order on CreatorHub:\n\n${lines.join('\n')}\n\nTotal: ₹${total.toLocaleString('en-IN')}\n\nPlease confirm delivery details and payment. Thank you!`;
 
   // Use the seller's WhatsApp for single-seller orders, else admin
-  const sellerIds = [...new Set(cart.map(i => PRODUCTS.find(p => p.id === i.id)?.sellerId))];
+  const sellerIds = [...new Set(cart.map(i => allProducts.find(p => p.id === i.id)?.seller_id))];
   let whatsapp = '919876543210'; // default admin
-  if (sellerIds.length === 1) {
-    const seller = SELLERS.find(s => s.id === sellerIds[0]);
+  if (sellerIds.length === 1 && sellerIds[0]) {
+    const seller = allSellers.find(s => s.id === sellerIds[0]);
     if (seller?.whatsapp) whatsapp = seller.whatsapp;
   }
 
@@ -586,10 +605,10 @@ function initProductModal() {
 }
 
 window.openProductModal = (productId) => {
-  const p = PRODUCTS.find(pr => pr.id === productId);
+  const p = allProducts.find(pr => pr.id === productId);
   if (!p) return;
 
-  const seller = SELLERS.find(s => s.id === p.sellerId);
+  const seller = allSellers.find(s => s.id === p.seller_id);
   const discount = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : 0;
   const stars = renderStars(p.rating);
 
@@ -600,8 +619,8 @@ window.openProductModal = (productId) => {
     <div class="modal-body">
       <!-- Images -->
       <div class="modal-images">
-        <img src="${p.images[0]}" alt="${p.title}" class="modal-main-img" id="modalMainImg" loading="lazy" />
-        ${p.images.length > 1 ? `
+        <img src="${(p.images && p.images[0]) ? p.images[0] : p.thumbnail}" alt="${p.title}" class="modal-main-img" id="modalMainImg" loading="lazy" />
+        ${(p.images && p.images.length > 1) ? `
         <div class="modal-img-thumbs">
           ${p.images.map((img, i) => `
             <img src="${img}" alt="View ${i+1}" class="modal-thumb ${i===0?'active':''}"
@@ -633,12 +652,14 @@ window.openProductModal = (productId) => {
 
         <p class="modal-desc">${p.description}</p>
 
+        ${(p.specs && p.specs.length > 0) ? `
         <div>
           <div class="modal-specs-title">What's included</div>
           <div class="modal-specs-list">
             ${p.specs.map(spec => `<div class="modal-spec-item">${spec}</div>`).join('')}
           </div>
         </div>
+        ` : ''}
 
         ${seller ? `
         <div class="modal-seller-row">

@@ -2,13 +2,13 @@
 // request.js — Request a Service Form Logic
 // ============================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initMobileNav();
   initDescCounter();
   setMinDate();
   initForm();
-  readURLParams();
+  await readURLParams();
 });
 
 function initNavbar() {
@@ -41,11 +41,11 @@ function setMinDate() {
   }
 }
 
-function readURLParams() {
+async function readURLParams() {
   const params = new URLSearchParams(window.location.search);
-  const seller = params.get('seller');
-  if (seller) {
-    const sellerObj = SELLERS.find(s => s.id === seller);
+  const sellerId = params.get('seller');
+  if (sellerId && typeof getSellerById === 'function') {
+    const sellerObj = await getSellerById(sellerId);
     if (sellerObj && document.getElementById('requestDesc')) {
       document.getElementById('requestDesc').placeholder = 
         `I'd like to hire ${sellerObj.name}. Please describe what you need from them...`;

@@ -1,20 +1,48 @@
-// auth.js
-function triggerAuthRender() {
-  const user = localStorage.getItem('creatorHubUser');
+// ============================================================
+// auth.js — Supabase Authentication & Navigation Integration
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Listen for Supabase session changes globally
+  if (typeof supabaseClient !== 'undefined') {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') {
+        triggerAuthRender(session);
+      }
+    });
+
+    // Fire an initial check just in case
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      triggerAuthRender(session);
+    });
+  }
+});
+
+function triggerAuthRender(session) {
   const authBtns = document.querySelectorAll('#authLoginBtn');
   
-  if (user) {
-    const parsedUser = JSON.parse(user);
+  if (session && session.user) {
+    // User is Logged In
+    const userMetadata = session.user.user_metadata || {};
+    const avatarUrl = userMetadata.avatar_url || `https://ui-avatars.com/api/?name=${userMetadata.full_name || 'User'}&background=7C3AED&color=fff&size=200&bold=true`;
+    const fullName = userMetadata.full_name || session.user.email.split('@')[0];
+
     authBtns.forEach(btn => {
       btn.outerHTML = `
-        <div class="user-dropdown" style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="toggleUserDropdown()">
-          <img src="${parsedUser.picture}" style="width:32px; height:32px; border-radius:50%; border:2px solid var(--purple-500);" />
-          <span style="font-size:0.875rem; font-weight:600;">${parsedUser.name}</span>
-        </div>
-        <div id="userMenu" style="display:none; position:absolute; top:60px; right:20px; background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:10px; z-index:100; min-width:150px;">
-          <button onclick="mockLogout()" class="btn btn-ghost w-full" style="text-align:left; color:var(--red-400)">Sign Out</button>
+        <div class="user-dropdown" style="display:flex; align-items:center; gap:8px; cursor:pointer; position:relative;" onclick="toggleUserDropdown()">
+          <img src="${avatarUrl}" style="width:32px; height:32px; border-radius:50%; border:2px solid var(--purple-500);" />
+          <span style="font-size:0.875rem; font-weight:600;">${fullName}</span>
+          
+          <div id="userMenu" style="display:none; position:absolute; top:45px; right:0px; background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:10px; z-index:100; min-width:150px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            <button onclick="handleSignOut()" class="btn btn-ghost w-full" style="text-align:left; color:var(--red-400)">Sign Out</button>
+          </div>
         </div>
       `;
+    });
+  } else {
+    // User is Logged Out
+    authBtns.forEach(btn => {
+      btn.outerHTML = `<a href="#" class="btn btn-ghost btn-sm" id="authLoginBtn" onclick="openAuthModal()">Sign in</a>`;
     });
   }
 }
@@ -34,12 +62,12 @@ function openAuthModal() {
     modal.style.justifyContent = 'center';
     
     modal.innerHTML = `
-      <div class="glass-card" style="width:90%; max-width:400px; padding:32px; position:relative;">
+      <div class="glass-card" style="width:90%; max-width:400px; padding:32px; position:relative; display:flex; flex-direction:column;">
         <button onclick="closeAuthModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">✕</button>
         <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:8px; text-align:center;">Welcome to CreatorHub</h2>
         <p style="color:var(--text-secondary); text-align:center; font-size:0.9rem; margin-bottom:24px;">Sign in to hire local talent instantly.</p>
         
-        <button onclick="mockGoogleLogin()" class="btn w-full" style="background:white; color:#333; font-weight:600; display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px;">
+        <button id="googleSignInBtn" onclick="signInWithGoogle()" class="btn w-full" style="background:white; color:#333; font-weight:600; display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px;">
           <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -48,6 +76,7 @@ function openAuthModal() {
           </svg>
           Sign in with Google
         </button>
+        <div id="authError" style="color:var(--red-400); font-size:0.85rem; text-align:center;"></div>
         <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:24px;">By signing in, you agree to our Terms and Privacy Policy.</p>
       </div>
     `;
@@ -61,20 +90,30 @@ function closeAuthModal() {
   if (modal) modal.style.display = 'none';
 }
 
-function mockGoogleLogin() {
-  const user = {
-    id: "seller-1",
-    name: "Priya Sharma", 
-    picture: "https://ui-avatars.com/api/?name=Priya+Sharma&background=7C3AED&color=fff&size=200&bold=true",
-    email: "priya@example.com"
-  };
-  localStorage.setItem('creatorHubUser', JSON.stringify(user));
-  closeAuthModal();
-  window.location.reload();
+async function signInWithGoogle() {
+  const btn = document.getElementById('googleSignInBtn');
+  const errDiv = document.getElementById('authError');
+  errDiv.innerText = "";
+  
+  if (btn) btn.innerHTML = "Authenticating...";
+
+  const { data, error } = await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+
+  if (error) {
+    console.error("Auth Error:", error);
+    errDiv.innerText = "Failed to connect to Google. Verify Supabase Console Settings.";
+    if (btn) btn.innerHTML = "Sign in with Google";
+  }
+  // If successful, the page will automatically redirect!
 }
 
-function mockLogout() {
-  localStorage.removeItem('creatorHubUser');
+async function handleSignOut() {
+  await supabaseClient.auth.signOut();
   window.location.reload();
 }
 

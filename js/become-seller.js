@@ -6,10 +6,10 @@ let currentStep = 1;
 const totalSteps = 3;
 const formData = {};
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initMobileNav();
-  renderSidebarSellers();
+  await renderSidebarSellers();
   initForm();
   initBioCounter();
 });
@@ -28,11 +28,12 @@ function initMobileNav() {
 }
 
 // ——— Sidebar sellers ———
-function renderSidebarSellers() {
+async function renderSidebarSellers() {
   const container = document.getElementById('sidebarSellers');
   if (!container) return;
 
-  const visible = SELLERS.slice(0, 4);
+  const sellers = await getSellers();
+  const visible = sellers.slice(0, 4);
   container.innerHTML = `
     <div class="seller-mini-list">
       ${visible.map(s => `

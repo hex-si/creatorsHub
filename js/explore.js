@@ -9,18 +9,29 @@ let priceMax = Infinity;
 let activeSort = 'default';
 let searchQuery = '';
 
-document.addEventListener('DOMContentLoaded', () => {
+let allServices = [];
+let allSellers = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initMobileNav();
-  buildCategoryFilters();
-  buildCategoryChips();
-  renderServices();
   initFilters();
   initSearch();
   initSort();
   initMobileFilter();
   readURLParams();
-  triggerAuthRender();
+  
+  // Wait for Supabase data
+  const grid = document.getElementById('servicesGrid');
+  if (grid) grid.innerHTML = '<p style="padding:40px;text-align:center;color:var(--text-muted)">Loading services...</p>';
+
+  const [svcs, slrs] = await Promise.all([getServices(), getSellers()]);
+  allServices = svcs;
+  allSellers = slrs;
+
+  buildCategoryFilters();
+  buildCategoryChips();
+  renderServices();
 });
 
 function initNavbar() {
@@ -54,8 +65,8 @@ function buildCategoryFilters() {
   if (!container) return;
 
   const counts = {};
-  SERVICES.forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
-  document.getElementById('count-all').textContent = SERVICES.length;
+  allServices.forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
+  document.getElementById('count-all').textContent = allServices.length;
 
   CATEGORIES.forEach(cat => {
     const label = document.createElement('label');
@@ -236,7 +247,7 @@ function initMobileFilter() {
 
 // ——— Render Services ———
 function renderServices() {
-  let filtered = [...SERVICES];
+  let filtered = [...allServices];
 
   // Category filter
   if (activeCategory !== 'all') {
@@ -246,11 +257,11 @@ function renderServices() {
   // Search filter
   if (searchQuery) {
     filtered = filtered.filter(s => {
-      const seller = SELLERS.find(sl => sl.id === s.sellerId);
+      const seller = allSellers.find(sl => sl.id === s.seller_id);
       return (
         s.title.toLowerCase().includes(searchQuery) ||
         s.description.toLowerCase().includes(searchQuery) ||
-        seller?.name.toLowerCase().includes(searchQuery) ||
+        (seller?.name || '').toLowerCase().includes(searchQuery) ||
         s.category.includes(searchQuery)
       );
     });
@@ -296,7 +307,7 @@ function renderServices() {
   if (emptyState) emptyState.style.display = 'none';
 
   grid.innerHTML = filtered.map(svc => {
-    const seller = SELLERS.find(s => s.id === svc.sellerId);
+    const seller = allSellers.find(s => s.id === svc.seller_id);
     return buildServiceCardExplore(svc, seller);
   }).join('');
 
@@ -354,7 +365,7 @@ function buildServiceCardExplore(svc, seller) {
           </div>
         </div>
         <button class="btn btn-primary w-full" style="margin-top:var(--space-3)"
-          onclick="window.location='seller.html?id=${svc.sellerId}'">
+          onclick="window.location='seller.html?id=${svc.seller_id}'">
           Hire Now
         </button>
       </div>

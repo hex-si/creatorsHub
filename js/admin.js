@@ -5,11 +5,18 @@
 const ADMIN_PASSWORD = 'admin123';
 
 // State
-let sellerApps = JSON.parse(JSON.stringify(SELLER_APPLICATIONS));
-let sellersState = JSON.parse(JSON.stringify(SELLERS));
-let ordersState = JSON.parse(JSON.stringify(ORDERS));
+let sellerApps = (typeof SELLER_APPLICATIONS !== 'undefined') ? JSON.parse(JSON.stringify(SELLER_APPLICATIONS)) : [];
+let sellersState = [];
+let ordersState = (typeof ORDERS !== 'undefined') ? JSON.parse(JSON.stringify(ORDERS)) : [];
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof getSellers === 'function') {
+    try {
+      sellersState = await getSellers();
+    } catch(e) { console.warn(e); }
+  } else if (typeof SELLERS !== 'undefined') {
+    sellersState = JSON.parse(JSON.stringify(SELLERS));
+  }
   initLogin();
 });
 
@@ -425,7 +432,7 @@ function renderOrders() {
   const container = document.getElementById('ordersContent');
   if (!container) return;
 
-  const sellerOptions = SELLERS.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  const sellerOptions = sellersState.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 
   container.innerHTML = `
     <div class="admin-table-wrap">
@@ -475,7 +482,7 @@ function renderOrders() {
 
   window.assignSeller = (orderId, sellerId) => {
     const order = ordersState.find(o => o.id === orderId);
-    const seller = SELLERS.find(s => s.id === sellerId);
+    const seller = sellersState.find(s => s.id === sellerId);
     if (order && seller) {
       order.sellerId = sellerId;
       order.sellerName = seller.name;
