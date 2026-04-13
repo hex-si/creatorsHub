@@ -10,13 +10,26 @@ let sellersState = [];
 let ordersState = (typeof ORDERS !== 'undefined') ? JSON.parse(JSON.stringify(ORDERS)) : [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-  if (typeof getSellers === 'function') {
-    try {
-      sellersState = await getSellers();
-    } catch(e) { console.warn(e); }
-  } else if (typeof SELLERS !== 'undefined') {
+  try {
+    if (typeof getSellers === 'function') {
+      sellersState = await getSellers() || [];
+    }
+  } catch(e) {
+    console.warn("Could not load real sellers:", e);
+  }
+  
+  // Also load orders dynamically if needed
+  try {
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      const { data } = await supabaseClient.from('orders').select('*');
+      if (data) ordersState = data;
+    }
+  } catch(e) { console.warn("Could not load real orders:", e); }
+  
+  if (sellersState.length === 0 && typeof SELLERS !== 'undefined') {
     sellersState = JSON.parse(JSON.stringify(SELLERS));
   }
+  
   initLogin();
 });
 
