@@ -3,7 +3,7 @@
 // Handles: caching, offline fallback, push notifications
 // ============================================================
 
-const CACHE_NAME = 'creatorhub-v1.2';
+const CACHE_NAME = 'creatorhub-v1.3.1';
 const OFFLINE_URL = '/404.html';
 
 const STATIC_ASSETS = [
@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
   // External resources (fonts, avatars): network with cache fallback
   if (url.origin !== location.origin) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      fetch(request).catch(() => caches.match(request).then(res => res || new Response('', { status: 504, statusText: 'Gateway Timeout' })))
     );
     return;
   }
@@ -99,8 +99,11 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Offline fallback for navigation requests
           if (request.destination === 'document') {
-            return caches.match(OFFLINE_URL);
+            return caches.match(OFFLINE_URL).then(cachedOffline => {
+              return cachedOffline || new Response('<html><body><h2>Offline - Site cannot be reached</h2><p>Please check your connection and refresh.</p></body></html>', { headers: { 'Content-Type': 'text/html' }});
+            });
           }
+          return new Response('', { status: 503, statusText: 'Service Unavailable' });
         });
     })
   );
