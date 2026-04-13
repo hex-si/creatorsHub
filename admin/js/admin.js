@@ -47,13 +47,13 @@ function hideLoader() {
 // --- Supabase Authentication ---
 
 async function checkSession() {
-  if (!supabaseClient) {
+  if (typeof window.supabaseClient === 'undefined' || !window.supabaseClient) {
     document.getElementById('authError').innerText = "Supabase not initialized! Check config.js.";
     return;
   }
 
   showLoader('Authenticating...');
-  const { data: { session }, error } = await supabaseClient.auth.getSession();
+  const { data: { session }, error } = await window.supabaseClient.auth.getSession();
   
   if (session) {
     // Verify if this user is actually an admin in the database.
@@ -81,7 +81,7 @@ async function handleLogin() {
   errDiv.innerText = "";
 
   try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await window.supabaseClient.auth.signInWithPassword({
       email: email,
       password: password
     });
@@ -104,7 +104,7 @@ async function handleLogin() {
 
 async function handleLogout() {
   showLoader('Signing off...');
-  await supabaseClient.auth.signOut();
+  await window.supabaseClient.auth.signOut();
   adminSession = null;
   showLogin();
   hideLoader();
